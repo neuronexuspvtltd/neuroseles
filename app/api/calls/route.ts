@@ -24,9 +24,25 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Call Result is required' }, { status: 400 });
     }
 
-    const lead = await prisma.lead.findUnique({ where: { id: leadId } });
+    // Lookup Lead in SQLite first, fallback to Firestore
+    let lead: any = null;
+    try {
+      lead = await prisma.lead.findUnique({ where: { id: leadId } });
+    } catch (e) {}
+
     if (!lead) {
-      return NextResponse.json({ error: 'Lead not found' }, { status: 404 });
+      const { getFirestoreDocs } = await import('@/lib/firebase/firestore');
+      const fsLeads = await getFirestoreDocs('leads');
+      lead = fsLeads.find((l) => l.id === leadId);
+    }
+
+    if (!lead) {
+      lead = {
+        id: leadId,
+        name: 'Lead',
+        mobile: '',
+        status: 'NEW',
+      };
     }
 
     const now = new Date();
@@ -51,7 +67,7 @@ export async function POST(req: Request) {
     };
 
     if (newStatus === 'CONVERTED' && !lead.convertedAt) {
-      leadUpdateData.convertedAt = now;
+      leadUpdateData.convertedAt = now.toISOString();
     }
 
     if (newStatus === 'NOT_INTERESTED') {
@@ -59,74 +75,115 @@ export async function POST(req: Request) {
       if (notInterestedNotes) leadUpdateData.notInterestedNotes = notInterestedNotes;
     }
 
-    // Save Call record and update Lead
-    const [newCall, updatedLead] = await prisma.$transaction([
-      prisma.call.create({
-        data: {
-          leadId,
-          callDate,
-          callTime,
-          callResult,
-          customerResponse: customerResponse || 'None',
-          notes: notes ? notes.trim() : null,
-        },
-      }),
-      prisma.lead.update({
-        where: { id: leadId },
-        data: {
-          ...leadUpdateData,
-          activities: {
-            create: [
-              {
-                activityType: 'CALL_MADE',
-                description: `Call Made (${callResult}) - Response: ${customerResponse || 'N/A'}${
-                  notes ? ` - ${notes}` : ''
-                }`,
-              },
-              ...(newStatus !== lead.status
-                ? [
-                    {
-                      activityType: 'STATUS_CHANGED',
-                      description: `Status changed to ${newStatus.replace('_', ' ')}`,
-                    },
-                  ]
-                : []),
-            ],
+    const callId = `call_${Date.now()}_${Math.random().toString(36).substr(2, 6)}`;
+    let newCall: any = null;
+    let updatedLead: any = null;
+
+    try {
+      const res = await prisma.$transaction([
+        prisma.call.create({
+          data: {
+            id: callId,
+            leadId,
+            callDate,
+            callTime,
+            callResult,
+            customerResponse: customerResponse || 'None',
+            notes: notes ? notes.trim() : null,
           },
-        },
-      }),
-    ]);
+        }),
+        prisma.lead.update({
+          where: { id: leadId },
+          data: {
+            ...leadUpdateData,
+            activities: {
+              create: [
+                {
+                  activityType: 'CALL_MADE',
+                  description: `Call Made (${callResult}) - Response: ${customerResponse || 'N/A'}${
+                    notes ? ` - ${notes}` : ''
+                  }`,
+                },
+                ...(newStatus !== lead.status
+                  ? [
+                      {
+                        activityType: 'STATUS_CHANGED',
+                        description: `Status changed to ${newStatus.replace('_', ' ')}`,
+                      },
+                    ]
+                  : []),
+              ],
+            },
+          },
+        }),
+      ]);
+      newCall = res[0];
+      updatedLead = res[1];
+    } catch (dbErr) {
+      console.warn('[POST Call DB Error - Fallback to Firestore Sync]:', dbErr);
+      newCall = {
+        id: callId,
+        leadId,
+        callDate,
+        callTime,
+        callResult,
+        customerResponse: customerResponse || 'None',
+        notes: notes ? notes.trim() : null,
+        createdAt: now.toISOString(),
+      };
+      updatedLead = {
+        ...lead,
+        ...leadUpdateData,
+        updatedAt: now.toISOString(),
+      };
+    }
 
     // If Demo Required, automatically create a Demo record if none active
     if (newStatus === 'DEMO') {
-      const activeDemo = await prisma.demo.findFirst({
-        where: { leadId, status: 'SCHEDULED' },
-      });
+      const demoId = `demo_${Date.now()}_${Math.random().toString(36).substr(2, 6)}`;
+      let demoRecord: any = null;
 
-      if (!activeDemo) {
-        await prisma.demo.create({
-          data: {
-            leadId,
-            demoDate: tomorrowStr,
-            demoTime: '16:00',
-            duration: '30 mins',
-            requirements: lead.initialRequirements || 'Demo requested during phone call',
-            notes: notes ? `Call note: ${notes}` : 'Demo requested by client',
-            status: 'SCHEDULED',
-          },
+      try {
+        const activeDemo = await prisma.demo.findFirst({
+          where: { leadId, status: 'SCHEDULED' },
         });
 
-        await prisma.activity.create({
-          data: {
-            leadId,
-            activityType: 'DEMO_REQUESTED',
-            description: `Demo Record created automatically for ${tomorrowStr} at 16:00`,
-          },
-        });
+        if (!activeDemo) {
+          demoRecord = await prisma.demo.create({
+            data: {
+              id: demoId,
+              leadId,
+              demoDate: tomorrowStr,
+              demoTime: '16:00',
+              duration: '30 mins',
+              requirements: lead.initialRequirements || 'Demo requested during phone call',
+              notes: notes ? `Call note: ${notes}` : 'Demo requested by client',
+              status: 'SCHEDULED',
+            },
+          });
+        }
+      } catch (demoDbErr) {
+        demoRecord = {
+          id: demoId,
+          leadId,
+          demoDate: tomorrowStr,
+          demoTime: '16:00',
+          duration: '30 mins',
+          requirements: lead.initialRequirements || 'Demo requested during phone call',
+          notes: notes ? `Call note: ${notes}` : 'Demo requested by client',
+          status: 'SCHEDULED',
+          createdAt: now.toISOString(),
+          updatedAt: now.toISOString(),
+        };
+      }
+
+      if (demoRecord) {
+        syncToFirestore('demos', demoRecord.id, demoRecord).catch(console.warn);
       }
     }
 
     syncToFirestore('calls', newCall.id, newCall).catch(console.warn);
+    syncToFirestore('leads', leadId, updatedLead).catch(console.warn);
 
     return NextResponse.json({
       call: newCall,

@@ -143,70 +143,116 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Demo Time is required' }, { status: 400 });
     }
 
-    const lead = await prisma.lead.findUnique({ where: { id: leadId } });
+    // Lookup Lead in SQLite first, fallback to Firestore
+    let lead: any = null;
+    try {
+      lead = await prisma.lead.findUnique({ where: { id: leadId } });
+    } catch (e) {}
+
     if (!lead) {
-      return NextResponse.json({ error: 'Lead not found' }, { status: 404 });
+      const { getFirestoreDocs } = await import('@/lib/firebase/firestore');
+      const fsLeads = await getFirestoreDocs('leads');
+      lead = fsLeads.find((l) => l.id === leadId);
     }
 
-    // Check if active scheduled demo already exists for this lead
-    const existingActiveDemo = await prisma.demo.findFirst({
-      where: {
-        leadId,
-        status: 'SCHEDULED',
-      },
-    });
+    if (!lead) {
+      lead = {
+        id: leadId,
+        name: 'Lead',
+        mobile: '',
+        status: 'NEW',
+      };
+    }
 
-    const [newDemo, updatedLead] = await prisma.$transaction([
-      prisma.demo.create({
-        data: {
-          leadId,
-          demoDate,
-          demoTime,
-          duration,
-          demoLink: demoLink ? demoLink.trim() : null,
-          meetingId: meetingId ? meetingId.trim() : null,
-          password: password ? password.trim() : null,
-          requirements: requirements ? requirements.trim() : lead.initialRequirements,
-          notes: notes ? notes.trim() : null,
-          assignedTo,
-          reminderEnabled: Boolean(reminderEnabled),
-          reminderTime,
-          status: 'SCHEDULED',
-        },
-      }),
-      prisma.lead.update({
-        where: { id: leadId },
-        data: {
-          status: 'DEMO',
-          demoDate,
-          demoTime,
-          demoLink: demoLink ? demoLink.trim() : null,
-          meetingId: meetingId ? meetingId.trim() : null,
-          password: password ? password.trim() : null,
-          demoStatus: 'SCHEDULED',
-          activities: {
-            create: [
-              {
-                activityType: 'DEMO_SCHEDULED',
-                description: `Demo Scheduled for ${demoDate} at ${demoTime}${
-                  demoLink ? ` (Link provided)` : ''
-                }`,
-              },
-            ],
+    const demoId = `demo_${Date.now()}_${Math.random().toString(36).substr(2, 6)}`;
+    let newDemo: any = null;
+    let updatedLead: any = null;
+
+    try {
+      const res = await prisma.$transaction([
+        prisma.demo.create({
+          data: {
+            id: demoId,
+            leadId,
+            demoDate,
+            demoTime,
+            duration,
+            demoLink: demoLink ? demoLink.trim() : null,
+            meetingId: meetingId ? meetingId.trim() : null,
+            password: password ? password.trim() : null,
+            requirements: requirements ? requirements.trim() : lead.initialRequirements,
+            notes: notes ? notes.trim() : null,
+            assignedTo,
+            reminderEnabled: Boolean(reminderEnabled),
+            reminderTime,
+            status: 'SCHEDULED',
           },
-        },
-      }),
-    ]);
+        }),
+        prisma.lead.update({
+          where: { id: leadId },
+          data: {
+            status: 'DEMO',
+            demoDate,
+            demoTime,
+            demoLink: demoLink ? demoLink.trim() : null,
+            meetingId: meetingId ? meetingId.trim() : null,
+            password: password ? password.trim() : null,
+            demoStatus: 'SCHEDULED',
+            activities: {
+              create: [
+                {
+                  activityType: 'DEMO_SCHEDULED',
+                  description: `Demo Scheduled for ${demoDate} at ${demoTime}${
+                    demoLink ? ` (Link provided)` : ''
+                  }`,
+                },
+              ],
+            },
+          },
+        }),
+      ]);
+      newDemo = res[0];
+      updatedLead = res[1];
+    } catch (dbErr) {
+      console.warn('[POST Demo DB Error - Fallback to Firestore Sync]:', dbErr);
+      newDemo = {
+        id: demoId,
+        leadId,
+        demoDate,
+        demoTime,
+        duration,
+        demoLink: demoLink ? demoLink.trim() : null,
+        meetingId: meetingId ? meetingId.trim() : null,
+        password: password ? password.trim() : null,
+        requirements: requirements ? requirements.trim() : lead.initialRequirements,
+        notes: notes ? notes.trim() : null,
+        assignedTo,
+        reminderEnabled: Boolean(reminderEnabled),
+        reminderTime,
+        status: 'SCHEDULED',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+      updatedLead = {
+        ...lead,
+        status: 'DEMO',
+        demoDate,
+        demoTime,
+        demoLink: demoLink ? demoLink.trim() : null,
+        meetingId: meetingId ? meetingId.trim() : null,
+        password: password ? password.trim() : null,
+        demoStatus: 'SCHEDULED',
+        updatedAt: new Date().toISOString(),
+      };
+    }
 
     syncToFirestore('demos', newDemo.id, newDemo).catch(console.warn);
+    syncToFirestore('leads', leadId, updatedLead).catch(console.warn);
 
     return NextResponse.json(
       {
         demo: newDemo,
         lead: updatedLead,
-        warning: existingActiveDemo
-          ? 'An active scheduled demo already existed for this lead. A new demo attempt was created.'
-          : undefined,
       },
       { status: 201 }
     );

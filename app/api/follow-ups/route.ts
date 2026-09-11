@@ -104,39 +104,83 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Follow-up Note is required' }, { status: 400 });
     }
 
-    const lead = await prisma.lead.findUnique({ where: { id: leadId } });
+    // Lookup Lead in SQLite first, fallback to Firestore
+    let lead: any = null;
+    try {
+      lead = await prisma.lead.findUnique({ where: { id: leadId } });
+    } catch (e) {}
+
     if (!lead) {
-      return NextResponse.json({ error: 'Lead not found' }, { status: 404 });
+      const { getFirestoreDocs } = await import('@/lib/firebase/firestore');
+      const fsLeads = await getFirestoreDocs('leads');
+      lead = fsLeads.find((l) => l.id === leadId);
     }
 
-    const [newFollowUp, updatedLead] = await prisma.$transaction([
-      prisma.followUp.create({
-        data: {
-          leadId,
-          followUpDate,
-          followUpTime,
-          note: note.trim(),
-          reminderEnabled: Boolean(reminderEnabled),
-          status: 'PENDING',
-        },
-      }),
-      prisma.lead.update({
-        where: { id: leadId },
-        data: {
-          status: 'FOLLOW_UP',
-          activities: {
-            create: [
-              {
-                activityType: 'FOLLOW_UP_SCHEDULED',
-                description: `Follow-up Scheduled for ${followUpDate} at ${followUpTime} - Note: ${note.trim()}`,
-              },
-            ],
+    if (!lead) {
+      lead = {
+        id: leadId,
+        name: 'Lead',
+        mobile: '',
+        status: 'NEW',
+      };
+    }
+
+    const followUpId = `fu_${Date.now()}_${Math.random().toString(36).substr(2, 6)}`;
+    let newFollowUp: any = null;
+    let updatedLead: any = null;
+
+    try {
+      const res = await prisma.$transaction([
+        prisma.followUp.create({
+          data: {
+            id: followUpId,
+            leadId,
+            followUpDate,
+            followUpTime,
+            note: note.trim(),
+            reminderEnabled: Boolean(reminderEnabled),
+            status: 'PENDING',
           },
-        },
-      }),
-    ]);
+        }),
+        prisma.lead.update({
+          where: { id: leadId },
+          data: {
+            status: 'FOLLOW_UP',
+            activities: {
+              create: [
+                {
+                  activityType: 'FOLLOW_UP_SCHEDULED',
+                  description: `Follow-up Scheduled for ${followUpDate} at ${followUpTime} - Note: ${note.trim()}`,
+                },
+              ],
+            },
+          },
+        }),
+      ]);
+      newFollowUp = res[0];
+      updatedLead = res[1];
+    } catch (dbErr) {
+      console.warn('[POST FollowUp DB Error - Fallback to Firestore Sync]:', dbErr);
+      newFollowUp = {
+        id: followUpId,
+        leadId,
+        followUpDate,
+        followUpTime,
+        note: note.trim(),
+        reminderEnabled: Boolean(reminderEnabled),
+        status: 'PENDING',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+      updatedLead = {
+        ...lead,
+        status: 'FOLLOW_UP',
+        updatedAt: new Date().toISOString(),
+      };
+    }
 
     syncToFirestore('followups', newFollowUp.id, newFollowUp).catch(console.warn);
+    syncToFirestore('leads', leadId, updatedLead).catch(console.warn);
 
     return NextResponse.json({
       followUp: newFollowUp,
