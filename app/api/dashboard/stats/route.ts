@@ -13,6 +13,7 @@ import {
   differenceInDays,
 } from 'date-fns';
 import { requireAuth } from '@/lib/auth/session';
+import { getFirestoreDocs } from '@/lib/firebase/firestore';
 
 function summarizeCalls(callsList: { callResult: string; customerResponse: string }[]) {
   const total = callsList.length;
@@ -61,7 +62,124 @@ function summarizeCalls(callsList: { callResult: string; customerResponse: strin
     notConnected,
     conversionRate,
     responses,
+    results,
   };
+}
+
+async function hydrateFromFirestoreOrSeed() {
+  try {
+    const leadCount = await prisma.lead.count();
+    if (leadCount === 0) {
+      console.log('[Firestore Hydrate] Checking Firebase Firestore for existing records...');
+      const fsLeads = await getFirestoreDocs('leads');
+
+      if (fsLeads && fsLeads.length > 0) {
+        console.log(`[Firestore Hydrate] Found ${fsLeads.length} leads in Firebase. Hydrating database...`);
+
+        for (const l of fsLeads) {
+          try {
+            const created = await prisma.lead.upsert({
+              where: { id: l.id },
+              update: {},
+              create: {
+                id: l.id,
+                name: l.name || 'Unassigned Lead',
+                mobile: l.mobile || '9999999999',
+                normalizedMobile: l.normalizedMobile || `91${(l.mobile || '9999999999').replace(/\D/g, '')}`,
+                email: l.email || null,
+                company: l.company || null,
+                city: l.city || null,
+                source: l.source || 'Direct',
+                initialRequirements: l.initialRequirements || null,
+                notes: l.notes || null,
+                status: l.status || 'NEW',
+              },
+            });
+
+            if (l.calls && Array.isArray(l.calls)) {
+              for (const c of l.calls) {
+                try {
+                  await prisma.call.create({
+                    data: {
+                      id: c.id,
+                      leadId: created.id,
+                      callDate: c.callDate || format(new Date(), 'yyyy-MM-dd'),
+                      callTime: c.callTime || '10:00',
+                      callResult: c.callResult || 'Call Received',
+                      customerResponse: c.customerResponse || 'Interested',
+                      notes: c.notes || null,
+                    },
+                  });
+                } catch (e) {}
+              }
+            }
+
+            if (l.followUps && Array.isArray(l.followUps)) {
+              for (const f of l.followUps) {
+                try {
+                  await prisma.followUp.create({
+                    data: {
+                      id: f.id,
+                      leadId: created.id,
+                      followUpDate: f.followUpDate || format(new Date(), 'yyyy-MM-dd'),
+                      followUpTime: f.followUpTime || '11:00',
+                      note: f.note || 'Follow-up discussion',
+                      status: f.status || 'PENDING',
+                    },
+                  });
+                } catch (e) {}
+              }
+            }
+
+            if (l.demos && Array.isArray(l.demos)) {
+              for (const d of l.demos) {
+                try {
+                  await prisma.demo.create({
+                    data: {
+                      id: d.id,
+                      leadId: created.id,
+                      demoDate: d.demoDate || format(new Date(), 'yyyy-MM-dd'),
+                      demoTime: d.demoTime || '14:00',
+                      demoLink: d.demoLink || null,
+                      status: d.status || 'SCHEDULED',
+                      notes: d.notes || null,
+                    },
+                  });
+                } catch (e) {}
+              }
+            }
+
+            if (l.quotations && Array.isArray(l.quotations)) {
+              for (const q of l.quotations) {
+                try {
+                  await prisma.quotation.create({
+                    data: {
+                      id: q.id,
+                      leadId: created.id,
+                      quotationNumber: q.quotationNumber || `QT-${Math.floor(Math.random()*10000)}`,
+                      projectTitle: q.projectTitle || 'Project Proposal',
+                      quotationDate: q.quotationDate || format(new Date(), 'yyyy-MM-dd'),
+                      validUntil: q.validUntil || format(new Date(), 'yyyy-MM-dd'),
+                      status: q.status || 'SENT',
+                      grandTotal: q.grandTotal || 0,
+                    },
+                  });
+                } catch (e) {}
+              }
+            }
+          } catch (leadErr) {
+            console.warn('[Hydrate Lead Error]:', leadErr);
+          }
+        }
+        console.log('[Firestore Hydrate] Successfully hydrated database from Firebase!');
+        return;
+      }
+
+      await autoSeedSampleData();
+    }
+  } catch (err) {
+    console.error('[Firestore Hydrate Error]:', err);
+  }
 }
 
 async function autoSeedSampleData() {
@@ -257,8 +375,8 @@ export async function GET(req: Request) {
     const leadDateWhere = periodStart && periodEnd ? { createdAt: { gte: periodStart, lte: periodEnd } } : {};
     const prevLeadDateWhere = prevPeriodStart && prevPeriodEnd ? { createdAt: { gte: prevPeriodStart, lte: prevPeriodEnd } } : {};
 
-    // Auto-seed initial sample leads and operations if database is empty
-    await autoSeedSampleData();
+    // Auto-seed initial sample leads or hydrate from Firebase Firestore if database is empty
+    await hydrateFromFirestoreOrSeed();
 
     // Execute aggregated parallel database queries
     const [

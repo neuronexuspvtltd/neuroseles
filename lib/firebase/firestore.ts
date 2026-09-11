@@ -101,3 +101,19 @@ export function subscribeToCollection(
     return () => {};
   }
 }
+
+// Safe Firestore query reader wrapper
+export async function getFirestoreDocs(collectionName: string): Promise<any[]> {
+  try {
+    const querySnapshot = await getDocs(collection(db, collectionName));
+    const items: any[] = [];
+    querySnapshot.forEach((docSnap) => {
+      items.push({ id: docSnap.id, ...docSnap.data() });
+    });
+    return items;
+  } catch (error) {
+    console.warn(`[Firestore Fetch Error] (${collectionName}):`, error);
+    return [];
+  }
+}
+
