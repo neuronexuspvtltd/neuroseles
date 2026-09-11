@@ -19,7 +19,10 @@ export interface AuthUser {
   createdAt: Date;
 }
 
-export async function createSession(user: { id: string; email: string; role: string; name?: string }) {
+export async function createSession(
+  user: { id: string; email: string; role: string; name?: string },
+  response?: NextResponse
+) {
   // Create JWT token valid for 7 days
   const token = await new SignJWT({
     userId: user.id,
@@ -47,15 +50,28 @@ export async function createSession(user: { id: string; email: string; role: str
     console.warn('[Session DB Warning] Could not persist session record to DB:', dbErr);
   }
 
-  // Set HTTP-only Cookie
-  const cookieStore = await cookies();
-  cookieStore.set(COOKIE_NAME, token, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'lax',
-    path: '/',
-    expires: expiresAt,
-  });
+  // Attach directly to response if provided
+  if (response) {
+    response.cookies.set(COOKIE_NAME, token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      path: '/',
+      expires: expiresAt,
+    });
+  }
+
+  // Set HTTP-only Cookie in cookieStore
+  try {
+    const cookieStore = await cookies();
+    cookieStore.set(COOKIE_NAME, token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      path: '/',
+      expires: expiresAt,
+    });
+  } catch (e) {}
 
   return token;
 }

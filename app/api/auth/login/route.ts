@@ -117,13 +117,28 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // Create session cookie & JWT
-    await createSession({
-      id: user.id,
-      email: user.email,
-      role: user.role,
-      name: user.name,
-    });
+    const resData = {
+      success: true,
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      },
+    };
+
+    const response = NextResponse.json(resData);
+
+    // Create session cookie & JWT directly attached to response
+    await createSession(
+      {
+        id: user.id,
+        email: user.email,
+        role: user.role,
+        name: user.name,
+      },
+      response
+    );
 
     // Update lastLoginAt safely
     try {
@@ -145,15 +160,7 @@ export async function POST(req: NextRequest) {
       });
     } catch (actErr) {}
 
-    return NextResponse.json({
-      success: true,
-      user: {
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
-      },
-    });
+    return response;
   } catch (error: any) {
     console.error('Login error:', error);
     return NextResponse.json(
