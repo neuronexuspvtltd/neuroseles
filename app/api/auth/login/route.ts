@@ -1,7 +1,48 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { verifyPassword } from '@/lib/auth/passwords';
+import { verifyPassword, hashPassword } from '@/lib/auth/passwords';
 import { createSession } from '@/lib/auth/session';
+
+async function autoSeedDefaultAccounts() {
+  try {
+    const count = await prisma.user.count();
+    if (count === 0) {
+      console.log('[Auto-Seed] Seeding initial default CRM accounts...');
+      const adminHash = await hashPassword('Admin@123456');
+      const managerHash = await hashPassword('Manager@123456');
+      const salesHash = await hashPassword('Sales@123456');
+
+      await prisma.user.createMany({
+        data: [
+          {
+            name: 'System Administrator',
+            email: 'admin@neurosales.com',
+            passwordHash: adminHash,
+            role: 'ADMIN',
+            status: 'ACTIVE',
+          },
+          {
+            name: 'Sales Manager',
+            email: 'manager@neurosales.com',
+            passwordHash: managerHash,
+            role: 'MANAGER',
+            status: 'ACTIVE',
+          },
+          {
+            name: 'Sales Executive',
+            email: 'sales@neurosales.com',
+            passwordHash: salesHash,
+            role: 'SALES_STAFF',
+            status: 'ACTIVE',
+          },
+        ],
+      });
+      console.log('[Auto-Seed] Initial accounts seeded successfully!');
+    }
+  } catch (err) {
+    console.error('[Auto-Seed Error]:', err);
+  }
+}
 
 export async function POST(req: NextRequest) {
   try {
@@ -17,8 +58,11 @@ export async function POST(req: NextRequest) {
 
     const normalizedEmail = email.trim().toLowerCase();
 
+    // Ensure initial accounts exist in fresh database deployments
+    await autoSeedDefaultAccounts();
+
     // Find User
-    const user = await prisma.user.findUnique({
+    let user = await prisma.user.findUnique({
       where: { email: normalizedEmail },
     });
 
@@ -56,14 +100,18 @@ export async function POST(req: NextRequest) {
     });
 
     // Log Activity
-    await prisma.activity.create({
-      data: {
-        userId: user.id,
-        userName: user.name,
-        activityType: 'USER_LOGGED_IN',
-        description: `User ${user.name} logged in successfully.`,
-      },
-    });
+    try {
+      await prisma.activity.create({
+        data: {
+          userId: user.id,
+          userName: user.name,
+          activityType: 'USER_LOGGED_IN',
+          description: `User ${user.name} logged in successfully.`,
+        },
+      });
+    } catch (actErr) {
+      console.warn('Activity log error:', actErr);
+    }
 
     return NextResponse.json({
       success: true,
@@ -77,8 +125,9 @@ export async function POST(req: NextRequest) {
   } catch (error: any) {
     console.error('Login error:', error);
     return NextResponse.json(
-      { error: 'An unexpected authentication error occurred.' },
+      { error: error?.message || 'An unexpected authentication error occurred.' },
       { status: 500 }
     );
   }
 }
+
