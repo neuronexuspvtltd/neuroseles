@@ -24,7 +24,7 @@ yarn-error.log*
 .env.production.local
 
 # sqlite & local database
-/prisma/*.db
+#/prisma/*.db
 /prisma/*.db-journal
 
 # WhatsApp & WebJS temporary cache
