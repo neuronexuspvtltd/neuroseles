@@ -1,28 +1,7 @@
-import {
-  collection,
-  doc,
-  setDoc,
-  getDoc,
-  getDocs,
-  updateDoc,
-  deleteDoc,
-  query,
-  where,
-  orderBy,
-  limit,
-  onSnapshot,
-  Timestamp,
-  serverTimestamp,
-} from 'firebase/firestore';
+import { adminDb } from './admin';
 import { db } from './config';
+import { collection, query, orderBy, limit, onSnapshot } from 'firebase/firestore';
 
-/**
- * Firestore Helper Service
- * Provides real-time synchronization for CRM records:
- * Leads, Calls, Follow-ups, Demos, Quotations, Clients, Projects, Activities, Settings.
- */
-
-// Helper to convert JS Dates to Firestore ISO/Timestamps safely
 function sanitizeData(data: any) {
   if (!data || typeof data !== 'object') return data;
 
@@ -43,46 +22,36 @@ function sanitizeData(data: any) {
   return sanitized;
 }
 
-// Safe Firestore write wrapper (won't crash app if keys not configured yet)
+// Server-side Firestore Write (Uses Firebase Admin SDK - instant, no key check block)
 export async function syncToFirestore(collectionName: string, docId: string, data: any) {
   try {
-    if (!process.env.NEXT_PUBLIC_FIREBASE_API_KEY || process.env.NEXT_PUBLIC_FIREBASE_API_KEY === 'YOUR_FIREBASE_API_KEY') {
-      return; // Skip if keys not filled in yet
-    }
     const cleanData = sanitizeData({
       ...data,
       syncedAt: new Date().toISOString(),
     });
-    const docRef = doc(db, collectionName, docId);
-    await setDoc(docRef, cleanData, { merge: true });
+    await adminDb.collection(collectionName).doc(docId).set(cleanData, { merge: true });
+    console.log(`[Admin Firestore Sync Success] ${collectionName}/${docId}`);
   } catch (error) {
     console.warn(`[Firestore Sync Warning] (${collectionName}/${docId}):`, error);
   }
 }
 
-// Safe Firestore delete wrapper
+// Server-side Firestore Delete
 export async function deleteFromFirestore(collectionName: string, docId: string) {
   try {
-    if (!process.env.NEXT_PUBLIC_FIREBASE_API_KEY || process.env.NEXT_PUBLIC_FIREBASE_API_KEY === 'YOUR_FIREBASE_API_KEY') {
-      return;
-    }
-    const docRef = doc(db, collectionName, docId);
-    await deleteDoc(docRef);
+    await adminDb.collection(collectionName).doc(docId).delete();
   } catch (error) {
     console.warn(`[Firestore Delete Warning] (${collectionName}/${docId}):`, error);
   }
 }
 
-// Real-time collection listener helper
+// Client-side Real-time listener helper
 export function subscribeToCollection(
   collectionName: string,
   onUpdate: (docs: any[]) => void,
   maxLimit: number = 50
 ) {
   try {
-    if (!process.env.NEXT_PUBLIC_FIREBASE_API_KEY || process.env.NEXT_PUBLIC_FIREBASE_API_KEY === 'YOUR_FIREBASE_API_KEY') {
-      return () => {};
-    }
     const q = query(
       collection(db, collectionName),
       orderBy('createdAt', 'desc'),
@@ -102,12 +71,12 @@ export function subscribeToCollection(
   }
 }
 
-// Safe Firestore query reader wrapper
+// Server-side Firestore Reader (Uses Firebase Admin SDK)
 export async function getFirestoreDocs(collectionName: string): Promise<any[]> {
   try {
-    const querySnapshot = await getDocs(collection(db, collectionName));
+    const snapshot = await adminDb.collection(collectionName).get();
     const items: any[] = [];
-    querySnapshot.forEach((docSnap) => {
+    snapshot.forEach((docSnap) => {
       items.push({ id: docSnap.id, ...docSnap.data() });
     });
     return items;
@@ -116,4 +85,3 @@ export async function getFirestoreDocs(collectionName: string): Promise<any[]> {
     return [];
   }
 }
-
