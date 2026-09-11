@@ -50,25 +50,50 @@ export async function GET(req: Request) {
       where.quotationDate = { startsWith: monthPrefix };
     }
 
-    const quotations = await prisma.quotation.findMany({
-      where,
-      orderBy: { createdAt: 'desc' },
-      include: {
-        lead: {
-          select: {
-            id: true,
-            name: true,
-            mobile: true,
-            email: true,
-            company: true,
-            status: true,
+    let quotations: any[] = [];
+
+    try {
+      quotations = await prisma.quotation.findMany({
+        where,
+        orderBy: { createdAt: 'desc' },
+        include: {
+          lead: {
+            select: {
+              id: true,
+              name: true,
+              mobile: true,
+              email: true,
+              company: true,
+              status: true,
+            },
+          },
+          items: {
+            orderBy: { sortOrder: 'asc' },
           },
         },
-        items: {
-          orderBy: { sortOrder: 'asc' },
-        },
-      },
-    });
+      });
+    } catch (dbErr) {
+      console.warn('[GET Quotations DB Error - Fallback to Firestore]:', dbErr);
+    }
+
+    if (quotations.length === 0) {
+      const { getFirestoreDocs } = await import('@/lib/firebase/firestore');
+      const fsQuotations = await getFirestoreDocs('quotations');
+      if (fsQuotations && fsQuotations.length > 0) {
+        let filtered = fsQuotations.map((q) => ({
+          ...q,
+          lead: q.lead || { name: 'Lead', mobile: '' },
+          items: q.items || [],
+        }));
+        if (status !== 'ALL') {
+          filtered = filtered.filter((q) => q.status === status);
+        }
+        if (leadId) {
+          filtered = filtered.filter((q) => q.leadId === leadId);
+        }
+        quotations = filtered;
+      }
+    }
 
     return NextResponse.json({ quotations });
   } catch (error: any) {

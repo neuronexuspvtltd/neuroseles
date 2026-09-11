@@ -2,9 +2,12 @@ import { PrismaClient } from '@prisma/client';
 import fs from 'fs';
 import path from 'path';
 
-if (process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME) {
-  const tmpDbPath = '/tmp/dev.db';
+const isServerless = Boolean(process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME);
+const tmpDbPath = '/tmp/dev.db';
 
+let dbUrl = process.env.DATABASE_URL;
+
+if (isServerless) {
   try {
     const candidatePaths = [
       path.join(process.cwd(), 'prisma', 'dev.db'),
@@ -34,9 +37,11 @@ if (process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME) {
   } catch (e) {
     console.warn('[Prisma Serverless DB Setup Warning]:', e);
   }
-  process.env.DATABASE_URL = `file:${tmpDbPath}`;
-} else if (!process.env.DATABASE_URL) {
-  process.env.DATABASE_URL = 'file:./dev.db';
+  dbUrl = `file:${tmpDbPath}`;
+  process.env.DATABASE_URL = dbUrl;
+} else if (!dbUrl) {
+  dbUrl = 'file:./dev.db';
+  process.env.DATABASE_URL = dbUrl;
 }
 
 const globalForPrisma = globalThis as unknown as {
@@ -46,6 +51,11 @@ const globalForPrisma = globalThis as unknown as {
 export const prisma =
   globalForPrisma.prisma ??
   new PrismaClient({
+    datasources: {
+      db: {
+        url: dbUrl,
+      },
+    },
     log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
   });
 

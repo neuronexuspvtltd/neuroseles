@@ -40,35 +40,73 @@ export async function GET(req: Request) {
       };
     }
 
-    const [clients, total] = await prisma.$transaction([
-      prisma.client.findMany({
-        where,
-        orderBy: { createdAt: 'desc' },
-        skip: (page - 1) * limit,
-        take: limit,
-        include: {
-          lead: {
-            select: { id: true, name: true, initialRequirements: true },
+    const skip = (page - 1) * limit;
+
+    let clients: any[] = [];
+    let total = 0;
+
+    try {
+      const res = await prisma.$transaction([
+        prisma.client.findMany({
+          where,
+          orderBy: { createdAt: 'desc' },
+          skip,
+          take: limit,
+          include: {
+            lead: {
+              select: { id: true, name: true, initialRequirements: true },
+            },
+            projects: {
+              orderBy: { updatedAt: 'desc' },
+              select: { id: true, name: true, type: true, status: true, startDate: true, expectedCompletionDate: true },
+            },
+            activities: {
+              orderBy: { createdAt: 'desc' },
+              take: 1,
+              select: { createdAt: true, description: true },
+            },
           },
-          projects: {
-            orderBy: { updatedAt: 'desc' },
-            select: { id: true, name: true, type: true, status: true, startDate: true, expectedCompletionDate: true },
-          },
-          activities: {
-            orderBy: { createdAt: 'desc' },
-            take: 1,
-            select: { createdAt: true, description: true },
-          },
-        },
-      }),
-      prisma.client.count({ where }),
-    ]);
+        }),
+        prisma.client.count({ where }),
+      ]);
+      clients = res[0];
+      total = res[1];
+    } catch (dbErr) {
+      console.warn('[GET Clients DB Error - Fallback to Firestore]:', dbErr);
+    }
+
+    if (clients.length === 0) {
+      const { getFirestoreDocs } = await import('@/lib/firebase/firestore');
+      const fsClients = await getFirestoreDocs('clients');
+      if (fsClients && fsClients.length > 0) {
+        let filtered = fsClients.map((c) => ({
+          ...c,
+          lead: c.lead || null,
+          projects: c.projects || [],
+          activities: c.activities || [],
+        }));
+        if (status !== 'ALL') {
+          filtered = filtered.filter((c) => c.status === status);
+        }
+        if (search.trim()) {
+          const q = search.trim().toLowerCase();
+          filtered = filtered.filter(
+            (c) =>
+              (c.name && c.name.toLowerCase().includes(q)) ||
+              (c.mobile && c.mobile.includes(q)) ||
+              (c.company && c.company.toLowerCase().includes(q))
+          );
+        }
+        clients = filtered.slice(skip, skip + limit);
+        total = filtered.length;
+      }
+    }
 
     return NextResponse.json({
       clients,
       total,
       page,
-      totalPages: Math.ceil(total / limit),
+      totalPages: Math.ceil(total / limit) || 1,
     });
   } catch (error: any) {
     console.error('Error fetching clients:', error);

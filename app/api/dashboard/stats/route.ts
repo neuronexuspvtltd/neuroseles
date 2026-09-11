@@ -809,7 +809,120 @@ export async function GET(req: Request) {
       recentClients,
     });
   } catch (error: any) {
-    console.error('Error fetching dashboard stats:', error);
+    console.error('Error fetching dashboard stats from Prisma (Attempting Firestore Fallback):', error);
+
+    try {
+      const fsLeads = await getFirestoreDocs('leads');
+      const fsCalls = await getFirestoreDocs('calls');
+      const fsDemos = await getFirestoreDocs('demos');
+      const fsFollowUps = await getFirestoreDocs('followups');
+      const fsQuotations = await getFirestoreDocs('quotations');
+      const fsClients = await getFirestoreDocs('clients');
+
+      const totalLeads = fsLeads.length;
+      const newLeads = fsLeads.filter((l) => l.status === 'NEW').length;
+      const calledLeads = fsLeads.filter((l) => ['CALLED', 'INTERESTED', 'FOLLOW_UP', 'DEMO', 'QUOTATION', 'CONVERTED'].includes(l.status)).length;
+      const interestedLeads = fsLeads.filter((l) => l.status === 'INTERESTED').length;
+      const followUpLeads = fsLeads.filter((l) => l.status === 'FOLLOW_UP').length;
+      const demoLeads = fsLeads.filter((l) => l.status === 'DEMO').length;
+      const quotationLeads = fsLeads.filter((l) => l.status === 'QUOTATION').length;
+      const convertedClients = fsLeads.filter((l) => l.status === 'CONVERTED').length;
+
+      const todayStr = format(new Date(), 'yyyy-MM-dd');
+      const pendingFollowUps = fsFollowUps.filter((f) => f.status === 'PENDING');
+      const todayFollowUps = pendingFollowUps.filter((f) => f.followUpDate === todayStr);
+      const overdueFollowUps = pendingFollowUps.filter((f) => f.followUpDate < todayStr);
+
+      const scheduledDemos = fsDemos.filter((d) => d.status === 'SCHEDULED');
+      const todayDemos = scheduledDemos.filter((d) => d.demoDate === todayStr);
+
+      return NextResponse.json({
+        period: 'all',
+        summary: {
+          totalLeads,
+          totalLeadsLifetime: totalLeads,
+          totalLeadsInPeriod: totalLeads,
+          totalLeadsGrowth: 0,
+          newLeads,
+          calledLeads,
+          interestedLeads,
+          followUpLeads,
+          demoLeads,
+          quotationLeads,
+          convertedClients,
+          pendingFollowUps: pendingFollowUps.length,
+          todayFollowUpsCount: todayFollowUps.length,
+          overdueFollowUpsCount: overdueFollowUps.length,
+          upcomingDemosCount: scheduledDemos.length,
+          todayDemosCount: todayDemos.length,
+          completedDemosCount: fsDemos.filter((d) => d.status === 'COMPLETED').length,
+          totalQuotations: fsQuotations.length,
+          draftQuotations: fsQuotations.filter((q) => q.status === 'DRAFT').length,
+          sentQuotations: fsQuotations.filter((q) => q.status === 'SENT').length,
+          viewedQuotations: fsQuotations.filter((q) => q.status === 'VIEWED').length,
+          acceptedQuotations: fsQuotations.filter((q) => q.status === 'ACCEPTED').length,
+          rejectedQuotations: fsQuotations.filter((q) => q.status === 'REJECTED').length,
+          expiredQuotations: fsQuotations.filter((q) => q.status === 'EXPIRED').length,
+          totalQuotationValue: fsQuotations.reduce((sum, q) => sum + (q.grandTotal || 0), 0),
+          acceptedQuotationValue: fsQuotations.filter((q) => q.status === 'ACCEPTED').reduce((sum, q) => sum + (q.grandTotal || 0), 0),
+          quotationAcceptanceRate: fsQuotations.length ? Math.round((fsQuotations.filter((q) => q.status === 'ACCEPTED').length / fsQuotations.length) * 100) : 0,
+          totalClients: fsClients.length,
+          activeClients: fsClients.filter((c) => c.status === 'ACTIVE').length,
+          convertedThisMonth: fsClients.length,
+          convertedThisYear: fsClients.length,
+          overallConversionRate: totalLeads ? Math.round((convertedClients / totalLeads) * 100) : 0,
+        },
+        callAnalytics: {
+          today: { total: fsCalls.length, connected: fsCalls.filter((c) => c.callResult === 'Call Received').length, notConnected: 0, conversionRate: 0, responses: {}, results: {} },
+          weekly: { total: fsCalls.length, connected: fsCalls.filter((c) => c.callResult === 'Call Received').length, notConnected: 0, conversionRate: 0, responses: {}, results: {} },
+          monthly: { total: fsCalls.length, connected: fsCalls.filter((c) => c.callResult === 'Call Received').length, notConnected: 0, conversionRate: 0, responses: {}, results: {} },
+          inPeriod: { total: fsCalls.length, connected: fsCalls.filter((c) => c.callResult === 'Call Received').length, notConnected: 0, conversionRate: 0, responses: {}, results: {} },
+        },
+        todaysWork: {
+          followUps: todayFollowUps,
+          demos: todayDemos,
+        },
+        overdueFollowUps,
+        upcomingActivities: [],
+        pipeline: {
+          NEW: newLeads,
+          CALLED: calledLeads,
+          INTERESTED: interestedLeads,
+          FOLLOW_UP: followUpLeads,
+          DEMO: demoLeads,
+          QUOTATION: quotationLeads,
+          NOT_INTERESTED: 0,
+          CONVERTED: convertedClients,
+        },
+        conversionFunnel: [],
+        leadSources: [],
+        leadGenerationTrend: [],
+        quotationAnalytics: {
+          totalQuotations: fsQuotations.length,
+          draft: fsQuotations.filter((q) => q.status === 'DRAFT').length,
+          sent: fsQuotations.filter((q) => q.status === 'SENT').length,
+          viewed: fsQuotations.filter((q) => q.status === 'VIEWED').length,
+          accepted: fsQuotations.filter((q) => q.status === 'ACCEPTED').length,
+          rejected: fsQuotations.filter((q) => q.status === 'REJECTED').length,
+          expired: fsQuotations.filter((q) => q.status === 'EXPIRED').length,
+          totalValue: fsQuotations.reduce((sum, q) => sum + (q.grandTotal || 0), 0),
+          acceptedValue: fsQuotations.filter((q) => q.status === 'ACCEPTED').reduce((sum, q) => sum + (q.grandTotal || 0), 0),
+          acceptanceRate: fsQuotations.length ? Math.round((fsQuotations.filter((q) => q.status === 'ACCEPTED').length / fsQuotations.length) * 100) : 0,
+        },
+        clientConversionAnalytics: {
+          totalConverted: fsClients.length,
+          convertedThisMonth: fsClients.length,
+          convertedThisYear: fsClients.length,
+          conversionRate: totalLeads ? Math.round((convertedClients / totalLeads) * 100) : 0,
+        },
+        recentActivities: [],
+        recentLeads: fsLeads.slice(0, 10),
+        recentClients: fsClients.slice(0, 10),
+      });
+    } catch (fsErr) {
+      console.error('[Firestore Fallback Error]:', fsErr);
+    }
+
     return NextResponse.json({
       period: 'all',
       summary: {

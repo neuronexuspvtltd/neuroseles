@@ -10,41 +10,67 @@ export async function GET(req: Request) {
     await hydrateFollowUps();
     const todayStr = format(new Date(), 'yyyy-MM-dd');
 
-    const [allPending, todayFollowUps, upcomingFollowUps, overdueFollowUps] = await Promise.all([
-      // All pending
-      prisma.followUp.findMany({
-        where: { status: 'PENDING' },
-        include: { lead: true },
-        orderBy: [{ followUpDate: 'asc' }, { followUpTime: 'asc' }],
-      }),
-      // Today
-      prisma.followUp.findMany({
-        where: {
-          followUpDate: todayStr,
-          status: 'PENDING',
-        },
-        include: { lead: true },
-        orderBy: { followUpTime: 'asc' },
-      }),
-      // Upcoming
-      prisma.followUp.findMany({
-        where: {
-          followUpDate: { gt: todayStr },
-          status: 'PENDING',
-        },
-        include: { lead: true },
-        orderBy: [{ followUpDate: 'asc' }, { followUpTime: 'asc' }],
-      }),
-      // Overdue
-      prisma.followUp.findMany({
-        where: {
-          followUpDate: { lt: todayStr },
-          status: 'PENDING',
-        },
-        include: { lead: true },
-        orderBy: [{ followUpDate: 'asc' }, { followUpTime: 'asc' }],
-      }),
-    ]);
+    let allPending: any[] = [];
+    let todayFollowUps: any[] = [];
+    let upcomingFollowUps: any[] = [];
+    let overdueFollowUps: any[] = [];
+
+    try {
+      const res = await Promise.all([
+        prisma.followUp.findMany({
+          where: { status: 'PENDING' },
+          include: { lead: true },
+          orderBy: [{ followUpDate: 'asc' }, { followUpTime: 'asc' }],
+        }),
+        prisma.followUp.findMany({
+          where: {
+            followUpDate: todayStr,
+            status: 'PENDING',
+          },
+          include: { lead: true },
+          orderBy: { followUpTime: 'asc' },
+        }),
+        prisma.followUp.findMany({
+          where: {
+            followUpDate: { gt: todayStr },
+            status: 'PENDING',
+          },
+          include: { lead: true },
+          orderBy: [{ followUpDate: 'asc' }, { followUpTime: 'asc' }],
+        }),
+        prisma.followUp.findMany({
+          where: {
+            followUpDate: { lt: todayStr },
+            status: 'PENDING',
+          },
+          include: { lead: true },
+          orderBy: [{ followUpDate: 'asc' }, { followUpTime: 'asc' }],
+        }),
+      ]);
+      allPending = res[0];
+      todayFollowUps = res[1];
+      upcomingFollowUps = res[2];
+      overdueFollowUps = res[3];
+    } catch (dbErr) {
+      console.warn('[GET FollowUps DB Error - Fallback to Firestore]:', dbErr);
+    }
+
+    if (allPending.length === 0) {
+      const { getFirestoreDocs } = await import('@/lib/firebase/firestore');
+      const fsFollowUps = await getFirestoreDocs('followups');
+      if (fsFollowUps && fsFollowUps.length > 0) {
+        const pendingDocs = fsFollowUps
+          .filter((f) => f.status === 'PENDING')
+          .map((f) => ({
+            ...f,
+            lead: f.lead || { name: 'Lead', mobile: '' },
+          }));
+        allPending = pendingDocs;
+        todayFollowUps = pendingDocs.filter((f) => f.followUpDate === todayStr);
+        upcomingFollowUps = pendingDocs.filter((f) => f.followUpDate > todayStr);
+        overdueFollowUps = pendingDocs.filter((f) => f.followUpDate < todayStr);
+      }
+    }
 
     return NextResponse.json({
       todayStr,

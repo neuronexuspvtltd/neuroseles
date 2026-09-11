@@ -57,36 +57,74 @@ export async function GET(req: NextRequest) {
 
     const skip = (page - 1) * limit;
 
-    const [leads, totalCount] = await Promise.all([
-      prisma.lead.findMany({
-        where,
-        orderBy,
-        skip,
-        take: limit,
-        include: {
-          assignedTo: {
-            select: { id: true, name: true, email: true, role: true },
+    let leads: any[] = [];
+    let totalCount = 0;
+
+    try {
+      const res = await Promise.all([
+        prisma.lead.findMany({
+          where,
+          orderBy,
+          skip,
+          take: limit,
+          include: {
+            assignedTo: {
+              select: { id: true, name: true, email: true, role: true },
+            },
+            createdBy: {
+              select: { id: true, name: true },
+            },
+            calls: {
+              orderBy: { createdAt: 'desc' },
+              take: 1,
+            },
+            followUps: {
+              where: { status: 'PENDING' },
+              orderBy: { followUpDate: 'asc' },
+              take: 1,
+            },
+            quotations: {
+              orderBy: { createdAt: 'desc' },
+              take: 1,
+            },
           },
-          createdBy: {
-            select: { id: true, name: true },
-          },
-          calls: {
-            orderBy: { createdAt: 'desc' },
-            take: 1,
-          },
-          followUps: {
-            where: { status: 'PENDING' },
-            orderBy: { followUpDate: 'asc' },
-            take: 1,
-          },
-          quotations: {
-            orderBy: { createdAt: 'desc' },
-            take: 1,
-          },
-        },
-      }),
-      prisma.lead.count({ where }),
-    ]);
+        }),
+        prisma.lead.count({ where }),
+      ]);
+      leads = res[0];
+      totalCount = res[1];
+    } catch (dbErr) {
+      console.warn('[GET Leads DB Error - Fallback to Firestore]:', dbErr);
+    }
+
+    if (leads.length === 0) {
+      const { getFirestoreDocs } = await import('@/lib/firebase/firestore');
+      const fsLeads = await getFirestoreDocs('leads');
+      if (fsLeads && fsLeads.length > 0) {
+        let filtered = fsLeads.map((l) => ({
+          ...l,
+          assignedTo: l.assignedTo || null,
+          createdBy: l.createdBy || null,
+          calls: l.calls || [],
+          followUps: l.followUps || [],
+          quotations: l.quotations || [],
+        }));
+        if (status !== 'ALL') {
+          filtered = filtered.filter((l) => l.status === status);
+        }
+        if (search.trim()) {
+          const q = search.trim().toLowerCase();
+          filtered = filtered.filter(
+            (l) =>
+              (l.name && l.name.toLowerCase().includes(q)) ||
+              (l.mobile && l.mobile.includes(q)) ||
+              (l.company && l.company.toLowerCase().includes(q))
+          );
+        }
+        leads = filtered.slice(skip, skip + limit);
+        totalCount = filtered.length;
+      }
+    }
 
     return NextResponse.json({
       leads,
@@ -94,7 +132,7 @@ export async function GET(req: NextRequest) {
         total: totalCount,
         page,
         limit,
-        totalPages: Math.ceil(totalCount / limit),
+        totalPages: Math.ceil(totalCount / limit) || 1,
       },
     });
   } catch (err: any) {

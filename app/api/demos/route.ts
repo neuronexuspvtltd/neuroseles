@@ -60,18 +60,43 @@ export async function GET(req: Request) {
 
     const skip = (page - 1) * limit;
 
-    const [demos, totalCount] = await Promise.all([
-      prisma.demo.findMany({
-        where,
-        orderBy: [{ demoDate: 'asc' }, { demoTime: 'asc' }],
-        skip,
-        take: limit,
-        include: {
-          lead: true,
-        },
-      }),
-      prisma.demo.count({ where }),
-    ]);
+    let demos: any[] = [];
+    let totalCount = 0;
+
+    try {
+      const res = await Promise.all([
+        prisma.demo.findMany({
+          where,
+          orderBy: [{ demoDate: 'asc' }, { demoTime: 'asc' }],
+          skip,
+          take: limit,
+          include: {
+            lead: true,
+          },
+        }),
+        prisma.demo.count({ where }),
+      ]);
+      demos = res[0];
+      totalCount = res[1];
+    } catch (dbErr) {
+      console.warn('[GET Demos DB Error - Fallback to Firestore]:', dbErr);
+    }
+
+    if (demos.length === 0) {
+      const { getFirestoreDocs } = await import('@/lib/firebase/firestore');
+      const fsDemos = await getFirestoreDocs('demos');
+      if (fsDemos && fsDemos.length > 0) {
+        let filtered = fsDemos.map((d) => ({
+          ...d,
+          lead: d.lead || { name: 'Lead', mobile: '' },
+        }));
+        if (status !== 'ALL') {
+          filtered = filtered.filter((d) => d.status === status);
+        }
+        demos = filtered.slice(skip, skip + limit);
+        totalCount = filtered.length;
+      }
+    }
 
     return NextResponse.json({
       demos,
@@ -80,7 +105,7 @@ export async function GET(req: Request) {
         total: totalCount,
         page,
         limit,
-        totalPages: Math.ceil(totalCount / limit),
+        totalPages: Math.ceil(totalCount / limit) || 1,
       },
     });
   } catch (error: any) {
