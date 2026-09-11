@@ -4,13 +4,9 @@ import { getFirestoreDocs } from './firestore';
 export async function hydrateLeads() {
   try {
     await ensureDatabaseTables();
-    const count = await prisma.lead.count();
-    if (count > 0) return;
-
     const firestoreLeads = await getFirestoreDocs('leads');
     if (!firestoreLeads || firestoreLeads.length === 0) return;
 
-    console.log(`[Hydration] Hydrating ${firestoreLeads.length} leads from Firestore to SQLite...`);
     for (const item of firestoreLeads) {
       if (!item.id || !item.name || !item.mobile) continue;
       const normalizedMobile = item.normalizedMobile || item.mobile.replace(/\D/g, '');
@@ -34,11 +30,11 @@ export async function hydrateLeads() {
             createdAt: item.createdAt ? new Date(item.createdAt) : new Date(),
             updatedAt: item.updatedAt ? new Date(item.updatedAt) : new Date(),
           },
-          update: {},
+          update: {
+            status: item.status || undefined,
+          },
         });
-      } catch (e) {
-        // Skip duplicate unique field conflicts gracefully
-      }
+      } catch (e) {}
     }
   } catch (err) {
     console.warn('[Hydrate Leads Warning]:', err);
@@ -48,13 +44,9 @@ export async function hydrateLeads() {
 export async function hydrateClients() {
   try {
     await ensureDatabaseTables();
-    const count = await prisma.client.count();
-    if (count > 0) return;
-
     const firestoreClients = await getFirestoreDocs('clients');
     if (!firestoreClients || firestoreClients.length === 0) return;
 
-    console.log(`[Hydration] Hydrating ${firestoreClients.length} clients from Firestore to SQLite...`);
     for (const item of firestoreClients) {
       if (!item.id || !item.name || !item.mobile) continue;
       const normalizedMobile = item.normalizedMobile || item.mobile.replace(/\D/g, '');
@@ -77,7 +69,9 @@ export async function hydrateClients() {
             createdAt: item.createdAt ? new Date(item.createdAt) : new Date(),
             updatedAt: item.updatedAt ? new Date(item.updatedAt) : new Date(),
           },
-          update: {},
+          update: {
+            status: item.status || undefined,
+          },
         });
       } catch (e) {}
     }
@@ -89,9 +83,6 @@ export async function hydrateClients() {
 export async function hydrateCalls() {
   try {
     await ensureDatabaseTables();
-    const count = await prisma.call.count();
-    if (count > 0) return;
-
     const firestoreCalls = await getFirestoreDocs('calls');
     if (!firestoreCalls || firestoreCalls.length === 0) return;
 
@@ -122,9 +113,6 @@ export async function hydrateCalls() {
 export async function hydrateDemos() {
   try {
     await ensureDatabaseTables();
-    const count = await prisma.demo.count();
-    if (count > 0) return;
-
     const firestoreDemos = await getFirestoreDocs('demos');
     if (!firestoreDemos || firestoreDemos.length === 0) return;
 
@@ -149,7 +137,9 @@ export async function hydrateDemos() {
             createdAt: item.createdAt ? new Date(item.createdAt) : new Date(),
             updatedAt: item.updatedAt ? new Date(item.updatedAt) : new Date(),
           },
-          update: {},
+          update: {
+            status: item.status || undefined,
+          },
         });
       } catch (e) {}
     }
@@ -161,9 +151,6 @@ export async function hydrateDemos() {
 export async function hydrateFollowUps() {
   try {
     await ensureDatabaseTables();
-    const count = await prisma.followUp.count();
-    if (count > 0) return;
-
     const firestoreFollowUps = await getFirestoreDocs('followups');
     if (!firestoreFollowUps || firestoreFollowUps.length === 0) return;
 
@@ -182,7 +169,9 @@ export async function hydrateFollowUps() {
             createdAt: item.createdAt ? new Date(item.createdAt) : new Date(),
             updatedAt: item.updatedAt ? new Date(item.updatedAt) : new Date(),
           },
-          update: {},
+          update: {
+            status: item.status || undefined,
+          },
         });
       } catch (e) {}
     }
@@ -194,9 +183,6 @@ export async function hydrateFollowUps() {
 export async function hydrateQuotations() {
   try {
     await ensureDatabaseTables();
-    const count = await prisma.quotation.count();
-    if (count > 0) return;
-
     const firestoreQuotations = await getFirestoreDocs('quotations');
     if (!firestoreQuotations || firestoreQuotations.length === 0) return;
 
@@ -220,7 +206,9 @@ export async function hydrateQuotations() {
             createdAt: item.createdAt ? new Date(item.createdAt) : new Date(),
             updatedAt: item.updatedAt ? new Date(item.updatedAt) : new Date(),
           },
-          update: {},
+          update: {
+            status: item.status || undefined,
+          },
         });
       } catch (e) {}
     }
