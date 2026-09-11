@@ -165,7 +165,7 @@ export async function POST(req: Request) {
       },
     });
 
-    await syncToFirestore('clients', client.id, client);
+    syncToFirestore('clients', client.id, client).catch(console.warn);
 
     return NextResponse.json(client, { status: 201 });
   } catch (error: any) {

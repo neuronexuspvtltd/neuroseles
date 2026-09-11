@@ -173,7 +173,7 @@ export async function POST(req: Request) {
       }),
     ]);
 
-    await syncToFirestore('demos', newDemo.id, newDemo);
+    syncToFirestore('demos', newDemo.id, newDemo).catch(console.warn);
 
     return NextResponse.json(
       {

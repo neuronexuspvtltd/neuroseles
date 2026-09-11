@@ -110,7 +110,7 @@ export async function POST(req: Request) {
       }),
     ]);
 
-    await syncToFirestore('followups', newFollowUp.id, newFollowUp);
+    syncToFirestore('followups', newFollowUp.id, newFollowUp).catch(console.warn);
 
     return NextResponse.json({
       followUp: newFollowUp,

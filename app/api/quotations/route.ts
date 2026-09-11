@@ -229,7 +229,7 @@ export async function POST(req: Request) {
       return created;
     });
 
-    await syncToFirestore('quotations', newQuotation.id, newQuotation);
+    syncToFirestore('quotations', newQuotation.id, newQuotation).catch(console.warn);
 
     return NextResponse.json(newQuotation);
   } catch (error: any) {

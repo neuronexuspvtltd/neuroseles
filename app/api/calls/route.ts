@@ -126,7 +126,7 @@ export async function POST(req: Request) {
       }
     }
 
-    await syncToFirestore('calls', newCall.id, newCall);
+    syncToFirestore('calls', newCall.id, newCall).catch(console.warn);
 
     return NextResponse.json({
       call: newCall,

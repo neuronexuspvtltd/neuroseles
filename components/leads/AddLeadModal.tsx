@@ -116,14 +116,16 @@ export const AddLeadModal: React.FC<AddLeadModalProps> = ({
         body: JSON.stringify(formData),
       });
 
-      const data = await res.json();
+      const data = await res.json().catch(() => ({ error: null }));
 
       if (!res.ok) {
         if (res.status === 409 && data.existingLead) {
           setDuplicateLead(data.existingLead);
           setError('This mobile number already exists.');
+        } else if (res.status === 401) {
+          setError('Session expired. Please log in again to save leads.');
         } else {
-          setError(data.error || 'Failed to create lead.');
+          setError(data.error || `Server error (${res.status}). Failed to create lead.`);
         }
         return;
       }

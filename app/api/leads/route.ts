@@ -135,10 +135,13 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Invalid Mobile Number format' }, { status: 400 });
     }
 
-    // Check duplicate mobile in DB
-    const existing = await prisma.lead.findUnique({
-      where: { normalizedMobile },
-    });
+    // Check duplicate mobile in DB safely
+    let existing: any = null;
+    try {
+      existing = await prisma.lead.findUnique({
+        where: { normalizedMobile },
+      });
+    } catch (e) {}
 
     if (existing) {
       return NextResponse.json(
@@ -238,8 +241,10 @@ export async function POST(req: NextRequest) {
       };
     }
 
-    // Sync to Cloud Firestore in background
-    await syncToFirestore('leads', newLead.id, newLead);
+    // Sync to Cloud Firestore in background (non-blocking)
+    syncToFirestore('leads', newLead.id, newLead).catch((err) =>
+      console.warn('[Firestore Background Sync Error]:', err)
+    );
 
     return NextResponse.json(newLead, { status: 201 });
   } catch (err: any) {
