@@ -1,0 +1,40 @@
+# dependencies
+/node_modules
+/.pnpm
+/.yarn
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
+
+# debug logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# local env files
+.env
+.env*.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# sqlite & local database
+/prisma/*.db
+/prisma/*.db-journal
+
+# WhatsApp & WebJS temporary cache
+/.wwebjs_cache/
+/.wwebjs_auth/
+
+# scratch scripts
+/scratch/
+
+# OS & Browser metadata
+.DS_Store
+.chrome_profile/
+*.pem

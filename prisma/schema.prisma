@@ -1,0 +1,395 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id                 String               @id @default(cuid())
+  name               String
+  email              String               @unique
+  passwordHash       String
+  role               String               @default("SALES_STAFF") // ADMIN, MANAGER, SALES_STAFF
+  status             String               @default("ACTIVE") // ACTIVE, INACTIVE
+  mustChangePassword Boolean              @default(false)
+  lastLoginAt        DateTime?
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
+
+  assignedLeads      Lead[]               @relation("AssignedLeads")
+  createdLeads       Lead[]               @relation("CreatedLeads")
+  updatedLeads       Lead[]               @relation("UpdatedLeads")
+  createdFollowUps   FollowUp[]           @relation("CreatedFollowUps")
+  createdDemos       Demo[]               @relation("CreatedDemos")
+  createdQuotations  Quotation[]          @relation("CreatedQuotations")
+  createdClients     Client[]             @relation("CreatedClients")
+  createdProjects    Project[]            @relation("CreatedProjects")
+  activities         Activity[]
+  passwordResetTokens PasswordResetToken[]
+  sessions           Session[]
+
+  @@index([email])
+  @@index([role])
+  @@index([status])
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([token])
+}
+
+model PasswordResetToken {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  token     String   @unique
+  expiresAt DateTime
+  used      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([token])
+}
+
+model Lead {
+  id                  String      @id @default(cuid())
+  name                String
+  mobile              String
+  normalizedMobile    String      @unique
+  email               String?
+  company             String?
+  city                String?
+  source              String?     @default("Direct")
+  initialRequirements String?
+  notes               String?
+  status              String      @default("NEW")
+
+  // Lead Ownership / Assignment
+  assignedToId        String?
+  assignedTo          User?       @relation("AssignedLeads", fields: [assignedToId], references: [id], onDelete: SetNull)
+  createdById         String?
+  createdBy           User?       @relation("CreatedLeads", fields: [createdById], references: [id], onDelete: SetNull)
+  updatedById         String?
+  updatedBy           User?       @relation("UpdatedLeads", fields: [updatedById], references: [id], onDelete: SetNull)
+
+  // Not Interested details
+  notInterestedReason String?
+  notInterestedNotes  String?
+
+  // Demo architecture prep fields
+  demoDate            String?
+  demoTime            String?
+  demoLink            String?
+  meetingId           String?
+  password            String?
+  demoNotes           String?
+  demoStatus          String?
+
+  createdAt           DateTime    @default(now())
+  updatedAt           DateTime    @updatedAt
+  convertedAt         DateTime?
+
+  calls               Call[]
+  followUps           FollowUp[]
+  activities          Activity[]
+  demos               Demo[]
+  quotations          Quotation[]
+  client              Client?
+
+  @@index([status])
+  @@index([createdAt])
+  @@index([normalizedMobile])
+  @@index([assignedToId])
+}
+
+model Call {
+  id               String   @id @default(cuid())
+  leadId           String
+  lead             Lead     @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  callDate         String
+  callTime         String
+  callResult       String   // Call Received, Call Not Received, Busy, Wrong Number
+  customerResponse String   // Interested, Demo Required, Quotation Required, Call Later, Not Interested, Converted
+  notes            String?
+  createdAt        DateTime @default(now())
+
+  @@index([leadId])
+  @@index([createdAt])
+}
+
+model FollowUp {
+  id              String    @id @default(cuid())
+  leadId          String
+  lead            Lead      @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  followUpDate    String    // YYYY-MM-DD
+  followUpTime    String    // HH:mm format or 12h format
+  note            String
+  reminderEnabled Boolean   @default(true)
+  status          String    @default("PENDING") // PENDING, COMPLETED, CANCELLED, RESCHEDULED
+  completedAt     DateTime?
+  createdById     String?
+  createdBy       User?     @relation("CreatedFollowUps", fields: [createdById], references: [id], onDelete: SetNull)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@index([leadId])
+  @@index([followUpDate])
+  @@index([status])
+}
+
+model Demo {
+  id              String    @id @default(cuid())
+  leadId          String
+  lead            Lead      @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  demoDate        String    // YYYY-MM-DD
+  demoTime        String    // HH:mm or 12h format
+  duration        String?   @default("30 mins")
+  status          String    @default("SCHEDULED") // SCHEDULED, COMPLETED, RESCHEDULED, CANCELLED, NO_SHOW
+  demoLink        String?
+  meetingId       String?
+  password        String?
+  requirements    String?
+  notes           String?
+  demoResult      String?   // Interested, Wants Quotation, Needs Follow-up, Not Interested, Converted, Other
+  assignedTo      String?   @default("Sales Representative")
+  reminderEnabled Boolean   @default(true)
+  reminderTime    String?   @default("15_MINS")
+  completedAt     DateTime?
+  createdById     String?
+  createdBy       User?     @relation("CreatedDemos", fields: [createdById], references: [id], onDelete: SetNull)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@index([leadId])
+  @@index([demoDate])
+  @@index([status])
+}
+
+model Activity {
+  id           String   @id @default(cuid())
+  leadId       String?
+  lead         Lead?    @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  clientId     String?
+  client       Client?  @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  projectId    String?
+  project      Project? @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  userId       String?
+  user         User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  userName     String?
+  activityType String   // e.g., LEAD_CREATED, CALL_MADE, DEMO_SCHEDULED, DEMO_COMPLETED, STATUS_CHANGED, CONVERTED, QUOTATION_CREATED, CLIENT_CREATED, PROJECT_CREATED, REQUIREMENT_UPDATED, FILE_UPLOADED, NOTE_ADDED, USER_LOGGED_IN, USER_LOGGED_OUT, LEAD_ASSIGNED
+  description  String
+  createdAt    DateTime @default(now())
+
+  @@index([leadId])
+  @@index([clientId])
+  @@index([projectId])
+  @@index([userId])
+  @@index([createdAt])
+}
+
+model Client {
+  id               String       @id @default(cuid())
+  leadId           String?      @unique
+  lead             Lead?        @relation(fields: [leadId], references: [id], onDelete: SetNull)
+  name             String
+  mobile           String
+  normalizedMobile String       @unique
+  email            String?
+  company          String?
+  city             String?
+  address          String?
+  status           String       @default("ACTIVE") // ACTIVE, COMPLETED, ON_HOLD, INACTIVE
+  clientSince      DateTime     @default(now())
+  notes            String?
+  createdById      String?
+  createdBy        User?        @relation("CreatedClients", fields: [createdById], references: [id], onDelete: SetNull)
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+
+  projects         Project[]
+  files            ClientFile[]
+  clientNotes      ClientNote[]
+  activities       Activity[]
+
+  @@index([status])
+  @@index([createdAt])
+  @@index([normalizedMobile])
+}
+
+model Project {
+  id                     String               @id @default(cuid())
+  clientId               String
+  client                 Client               @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  name                   String
+  type                   String?              // Website, Web Application, Mobile App, Software, SEO, Maintenance, Custom Development, Other
+  description            String?
+  requirements           String?
+  status                 String               @default("IN_PROGRESS") // PLANNED, IN_PROGRESS, ON_HOLD, COMPLETED, CANCELLED
+  startDate              String?              // YYYY-MM-DD
+  expectedCompletionDate String?              // YYYY-MM-DD
+  notes                  String?
+  createdById            String?
+  createdBy              User?                @relation("CreatedProjects", fields: [createdById], references: [id], onDelete: SetNull)
+  createdAt              DateTime             @default(now())
+  updatedAt              DateTime             @updatedAt
+
+  files                  ClientFile[]
+  projectNotes           ClientNote[]
+  requirementHistories   RequirementHistory[]
+  activities             Activity[]
+
+  @@index([clientId])
+  @@index([status])
+}
+
+model RequirementHistory {
+  id                String   @id @default(cuid())
+  projectId         String
+  project           Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  requirements      String
+  changeDescription String?
+  createdAt         DateTime @default(now())
+
+  @@index([projectId])
+}
+
+model ClientFile {
+  id            String   @id @default(cuid())
+  clientId      String
+  client        Client   @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  projectId     String?
+  project       Project? @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  fileName      String
+  fileReference String   // e.g. /uploads/client_files/12345_logo.png
+  fileType      String   // mime or ext
+  fileSize      Int      // bytes
+  category      String   // Logo, Images, Documents, Requirements, References, Other
+  uploadedBy    String?  @default("Sales Representative")
+  createdAt     DateTime @default(now())
+
+  @@index([clientId])
+  @@index([projectId])
+}
+
+model ClientNote {
+  id        String   @id @default(cuid())
+  clientId  String
+  client    Client   @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  projectId String?
+  project   Project? @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  note      String
+  createdBy String?  @default("Sales Representative")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([clientId])
+  @@index([projectId])
+}
+
+model Quotation {
+  id                   String          @id @default(cuid())
+  leadId               String
+  lead                 Lead            @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  quotationNumber      String          @unique // e.g., QT-0001, QT-0002, QT-0001-R1
+  parentQuotationId    String?
+  parentQuotation      Quotation?      @relation("QuotationRevisions", fields: [parentQuotationId], references: [id], onDelete: SetNull)
+  revisions            Quotation[]     @relation("QuotationRevisions")
+  revisionNumber       Int             @default(0)
+  projectTitle         String
+  projectDescription   String?
+  currency             String          @default("INR")
+  quotationDate        String          // YYYY-MM-DD
+  validUntil           String          // YYYY-MM-DD
+  status               String          @default("DRAFT") // DRAFT, SENT, VIEWED, ACCEPTED, REJECTED, EXPIRED, REVISED
+
+  // Calculations
+  subtotal             Float           @default(0)
+  itemDiscountTotal    Float           @default(0)
+  overallDiscountType  String?         @default("FIXED") // FIXED or PERCENTAGE
+  overallDiscountValue Float           @default(0)
+  overallDiscountAmount Float          @default(0)
+  taxTotal             Float           @default(0)
+  grandTotal           Float           @default(0)
+  amountInWords        String?
+
+  // Text details & payment terms
+  paymentTerms         String?
+  notes                String?
+  rejectionReason      String?
+  rejectionNotes       String?
+
+  // Historical Snapshots (JSON strings)
+  companySnapshot      String?
+  clientSnapshot       String?
+  termsSnapshot        String?
+
+  pdfFileReference     String?
+  createdById          String?
+  createdBy            User?           @relation("CreatedQuotations", fields: [createdById], references: [id], onDelete: SetNull)
+  sentAt               DateTime?
+  acceptedAt           DateTime?
+  rejectedAt           DateTime?
+  createdAt            DateTime        @default(now())
+  updatedAt            DateTime        @updatedAt
+
+  items                QuotationItem[]
+
+  @@index([leadId])
+  @@index([quotationNumber])
+  @@index([status])
+  @@index([quotationDate])
+  @@index([parentQuotationId])
+}
+
+model QuotationItem {
+  id             String    @id @default(cuid())
+  quotationId    String
+  quotation      Quotation @relation(fields: [quotationId], references: [id], onDelete: Cascade)
+  name           String
+  description    String?
+  quantity       Float     @default(1)
+  unitPrice      Float     @default(0)
+  discountType   String?   @default("FIXED") // FIXED or PERCENTAGE
+  discountValue  Float     @default(0)
+  discountAmount Float     @default(0)
+  taxRate        Float     @default(18) // e.g. 18 for 18%
+  taxAmount      Float     @default(0)
+  total          Float     @default(0)
+  sortOrder      Int       @default(0)
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  @@index([quotationId])
+}
+
+model CompanySetting {
+  id                 String   @id @default("default")
+  companyName        String   @default("NEURONEXUS NEXT-GEN INTELLIGENCE")
+  logo               String?  @default("/logo.png")
+  email              String?  @default("sales@neuronexus.ai")
+  phone              String?  @default("+91 98765 43210")
+  website            String?  @default("https://neuronexus.ai")
+  address            String?  @default("123 Tech Park, Suite 400, Mumbai, India")
+  gstNumber          String?  @default("27AAAAA0000A1Z5")
+  state              String?  @default("Maharashtra (27)")
+  bankName           String?  @default("HDFC BANK")
+  accountNumber      String?  @default("50200012345678")
+  ifscCode           String?  @default("HDFC0001234")
+  branchName         String?  @default("Mumbai Branch")
+  quotationPrefix    String   @default("QT-")
+  defaultCurrency    String   @default("INR")
+  defaultGstRate     Float    @default(18)
+  defaultTerms       String?  // JSON string array of terms
+  defaultPaymentTerms String? @default("50% Advance Payment, 50% upon final project completion.")
+  updatedAt          DateTime @updatedAt
+}
