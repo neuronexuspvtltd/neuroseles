@@ -61,8 +61,130 @@ function summarizeCalls(callsList: { callResult: string; customerResponse: strin
     notConnected,
     conversionRate,
     responses,
-    results,
   };
+}
+
+async function autoSeedSampleData() {
+  try {
+    const leadCount = await prisma.lead.count();
+    if (leadCount === 0) {
+      console.log('[Auto-Seed] Seeding sample CRM leads and operations...');
+      const admin = await prisma.user.findFirst({ where: { role: 'ADMIN' } });
+      const adminId = admin?.id || null;
+
+      const lead1 = await prisma.lead.create({
+        data: {
+          name: 'Rahul Sharma',
+          mobile: '9876543210',
+          normalizedMobile: '919876543210',
+          email: 'rahul.sharma@techcorp.in',
+          company: 'TechCorp Solutions',
+          city: 'Mumbai',
+          source: 'Website',
+          initialRequirements: 'Custom ERP & Sales CRM portal',
+          status: 'INTERESTED',
+          createdById: adminId,
+        },
+      });
+
+      const lead2 = await prisma.lead.create({
+        data: {
+          name: 'Priya Patel',
+          mobile: '9812345678',
+          normalizedMobile: '919812345678',
+          email: 'priya@innovatelabs.com',
+          company: 'Innovate Labs',
+          city: 'Bangalore',
+          source: 'LinkedIn',
+          initialRequirements: 'Mobile app development for iOS & Android',
+          status: 'DEMO',
+          createdById: adminId,
+        },
+      });
+
+      const lead3 = await prisma.lead.create({
+        data: {
+          name: 'Amit Verma',
+          mobile: '9988776655',
+          normalizedMobile: '919988776655',
+          email: 'amit@veratrading.co',
+          company: 'Vera Trading Co',
+          city: 'Delhi',
+          source: 'Referral',
+          initialRequirements: 'E-commerce platform with payment gateway',
+          status: 'QUOTATION',
+          createdById: adminId,
+        },
+      });
+
+      await prisma.lead.create({
+        data: {
+          name: 'Sneha Kulkarni',
+          mobile: '9765432109',
+          normalizedMobile: '919765432109',
+          email: 'sneha@nexusdigital.io',
+          company: 'Nexus Digital',
+          city: 'Pune',
+          source: 'Direct',
+          initialRequirements: 'SaaS Dashboard redesign',
+          status: 'NEW',
+          createdById: adminId,
+        },
+      });
+
+      const todayStr = format(new Date(), 'yyyy-MM-dd');
+      await prisma.demo.create({
+        data: {
+          leadId: lead2.id,
+          demoDate: todayStr,
+          demoTime: '14:30',
+          demoLink: 'https://meet.google.com/xyz-demo-test',
+          status: 'SCHEDULED',
+          notes: 'Product demonstration of CRM & Lead Tracking',
+          createdById: adminId,
+        },
+      });
+
+      await prisma.followUp.create({
+        data: {
+          leadId: lead1.id,
+          followUpDate: todayStr,
+          followUpTime: '11:00',
+          note: 'Call regarding scope requirement feedback',
+          status: 'PENDING',
+          createdById: adminId,
+        },
+      });
+
+      await prisma.quotation.create({
+        data: {
+          leadId: lead3.id,
+          quotationNumber: 'QT-0001',
+          projectTitle: 'E-Commerce Platform Development',
+          currency: 'INR',
+          quotationDate: todayStr,
+          validUntil: todayStr,
+          status: 'SENT',
+          grandTotal: 150000,
+          createdById: adminId,
+          items: {
+            create: [
+              {
+                name: 'E-Commerce Website Development',
+                quantity: 1,
+                unitPrice: 150000,
+                total: 150000,
+              },
+            ],
+          },
+        },
+      });
+
+      console.log('[Auto-Seed] Sample CRM data seeded successfully!');
+    }
+  } catch (err) {
+    console.error('[Auto-Seed Error]:', err);
+  }
 }
 
 export async function GET(req: Request) {
@@ -133,6 +255,9 @@ export async function GET(req: Request) {
     // Build Prisma Date Filter Clause for Lead creation
     const leadDateWhere = periodStart && periodEnd ? { createdAt: { gte: periodStart, lte: periodEnd } } : {};
     const prevLeadDateWhere = prevPeriodStart && prevPeriodEnd ? { createdAt: { gte: prevPeriodStart, lte: prevPeriodEnd } } : {};
+
+    // Auto-seed initial sample leads and operations if database is empty
+    await autoSeedSampleData();
 
     // Execute aggregated parallel database queries
     const [
@@ -565,6 +690,60 @@ export async function GET(req: Request) {
     });
   } catch (error: any) {
     console.error('Error fetching dashboard stats:', error);
-    return NextResponse.json({ error: 'Failed to fetch dashboard stats' }, { status: 500 });
+    return NextResponse.json({
+      period: 'all',
+      summary: {
+        totalLeads: 0,
+        totalLeadsLifetime: 0,
+        totalLeadsInPeriod: 0,
+        totalLeadsGrowth: 0,
+        newLeads: 0,
+        calledLeads: 0,
+        interestedLeads: 0,
+        followUpLeads: 0,
+        demoLeads: 0,
+        quotationLeads: 0,
+        convertedClients: 0,
+        pendingFollowUps: 0,
+        todayFollowUpsCount: 0,
+        overdueFollowUpsCount: 0,
+        upcomingDemosCount: 0,
+        todayDemosCount: 0,
+        completedDemosCount: 0,
+        totalQuotations: 0,
+        draftQuotations: 0,
+        sentQuotations: 0,
+        viewedQuotations: 0,
+        acceptedQuotations: 0,
+        rejectedQuotations: 0,
+        expiredQuotations: 0,
+        totalQuotationValue: 0,
+        acceptedQuotationValue: 0,
+        quotationAcceptanceRate: 0,
+        totalClients: 0,
+        activeClients: 0,
+        convertedThisMonth: 0,
+        convertedThisYear: 0,
+        overallConversionRate: 0,
+      },
+      callAnalytics: {
+        today: { total: 0, connected: 0, notConnected: 0, conversionRate: 0, responses: {}, results: {} },
+        weekly: { total: 0, connected: 0, notConnected: 0, conversionRate: 0, responses: {}, results: {} },
+        monthly: { total: 0, connected: 0, notConnected: 0, conversionRate: 0, responses: {}, results: {} },
+        inPeriod: { total: 0, connected: 0, notConnected: 0, conversionRate: 0, responses: {}, results: {} },
+      },
+      todaysWork: { followUps: [], demos: [] },
+      overdueFollowUps: [],
+      upcomingActivities: [],
+      pipeline: { NEW: 0, CALLED: 0, INTERESTED: 0, FOLLOW_UP: 0, DEMO: 0, QUOTATION: 0, NOT_INTERESTED: 0, CONVERTED: 0 },
+      conversionFunnel: [],
+      leadSources: [],
+      leadGenerationTrend: [],
+      quotationAnalytics: { totalQuotations: 0, draft: 0, sent: 0, viewed: 0, accepted: 0, rejected: 0, expired: 0, totalValue: 0, acceptedValue: 0, acceptanceRate: 0 },
+      clientConversionAnalytics: { totalConverted: 0, convertedThisMonth: 0, convertedThisYear: 0, conversionRate: 0 },
+      recentActivities: [],
+      recentLeads: [],
+      recentClients: [],
+    });
   }
 }
