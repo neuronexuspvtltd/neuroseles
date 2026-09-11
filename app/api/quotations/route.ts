@@ -1,10 +1,14 @@
 import { NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import { prisma, ensureDatabaseTables } from '@/lib/prisma';
 import { calculateQuotationTotals } from '@/lib/quotationCalculations';
 import { generateUniqueQuotationNumber } from '@/lib/quotationNumberGenerator';
+import { syncToFirestore } from '@/lib/firebase/firestore';
+import { hydrateQuotations } from '@/lib/firebase/hydration';
 
 export async function GET(req: Request) {
   try {
+    await ensureDatabaseTables();
+    await hydrateQuotations();
     const { searchParams } = new URL(req.url);
     const search = searchParams.get('search') || '';
     const status = searchParams.get('status') || 'ALL';
@@ -75,6 +79,7 @@ export async function GET(req: Request) {
 
 export async function POST(req: Request) {
   try {
+    await ensureDatabaseTables();
     const body = await req.json();
     const {
       leadId,
@@ -223,6 +228,8 @@ export async function POST(req: Request) {
 
       return created;
     });
+
+    await syncToFirestore('quotations', newQuotation.id, newQuotation);
 
     return NextResponse.json(newQuotation);
   } catch (error: any) {

@@ -1,9 +1,13 @@
 import { NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import { prisma, ensureDatabaseTables } from '@/lib/prisma';
 import { format } from 'date-fns';
+import { syncToFirestore } from '@/lib/firebase/firestore';
+import { hydrateFollowUps } from '@/lib/firebase/hydration';
 
 export async function GET(req: Request) {
   try {
+    await ensureDatabaseTables();
+    await hydrateFollowUps();
     const todayStr = format(new Date(), 'yyyy-MM-dd');
 
     const [allPending, todayFollowUps, upcomingFollowUps, overdueFollowUps] = await Promise.all([
@@ -57,6 +61,7 @@ export async function GET(req: Request) {
 
 export async function POST(req: Request) {
   try {
+    await ensureDatabaseTables();
     const body = await req.json();
     const { leadId, followUpDate, followUpTime, note, reminderEnabled = true } = body;
 
@@ -104,6 +109,8 @@ export async function POST(req: Request) {
         },
       }),
     ]);
+
+    await syncToFirestore('followups', newFollowUp.id, newFollowUp);
 
     return NextResponse.json({
       followUp: newFollowUp,

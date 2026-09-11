@@ -1,10 +1,12 @@
 import { NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import { prisma, ensureDatabaseTables } from '@/lib/prisma';
 import { CUSTOMER_RESPONSE_STATUS_MAP, LeadStatus } from '@/lib/statusConfig';
 import { format, addDays } from 'date-fns';
+import { syncToFirestore } from '@/lib/firebase/firestore';
 
 export async function POST(req: Request) {
   try {
+    await ensureDatabaseTables();
     const body = await req.json();
     const {
       leadId,
@@ -123,6 +125,8 @@ export async function POST(req: Request) {
         });
       }
     }
+
+    await syncToFirestore('calls', newCall.id, newCall);
 
     return NextResponse.json({
       call: newCall,

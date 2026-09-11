@@ -1,10 +1,14 @@
 import { NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import { prisma, ensureDatabaseTables } from '@/lib/prisma';
 import { format, addDays, startOfWeek, endOfWeek } from 'date-fns';
 import { normalizePhoneNumber } from '@/lib/phoneUtils';
+import { syncToFirestore } from '@/lib/firebase/firestore';
+import { hydrateDemos } from '@/lib/firebase/hydration';
 
 export async function GET(req: Request) {
   try {
+    await ensureDatabaseTables();
+    await hydrateDemos();
     const { searchParams } = new URL(req.url);
     const search = searchParams.get('search') || '';
     const status = searchParams.get('status') || 'ALL';
@@ -87,6 +91,7 @@ export async function GET(req: Request) {
 
 export async function POST(req: Request) {
   try {
+    await ensureDatabaseTables();
     const body = await req.json();
     const {
       leadId,
@@ -167,6 +172,8 @@ export async function POST(req: Request) {
         },
       }),
     ]);
+
+    await syncToFirestore('demos', newDemo.id, newDemo);
 
     return NextResponse.json(
       {

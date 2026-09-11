@@ -1,9 +1,13 @@
 import { NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import { prisma, ensureDatabaseTables } from '@/lib/prisma';
 import { normalizePhoneNumber } from '@/lib/phoneUtils';
+import { syncToFirestore } from '@/lib/firebase/firestore';
+import { hydrateClients } from '@/lib/firebase/hydration';
 
 export async function GET(req: Request) {
   try {
+    await ensureDatabaseTables();
+    await hydrateClients();
     const { searchParams } = new URL(req.url);
     const search = searchParams.get('search') || '';
     const status = searchParams.get('status') || 'ALL';
@@ -160,6 +164,8 @@ export async function POST(req: Request) {
         description: `Manual Client "${client.name}" created`,
       },
     });
+
+    await syncToFirestore('clients', client.id, client);
 
     return NextResponse.json(client, { status: 201 });
   } catch (error: any) {

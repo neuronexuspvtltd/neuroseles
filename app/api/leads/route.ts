@@ -1,12 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import { prisma, ensureDatabaseTables } from '@/lib/prisma';
 import { normalizePhoneNumber } from '@/lib/phoneUtils';
 import { requireAuth } from '@/lib/auth/session';
 
 import { syncToFirestore } from '@/lib/firebase/firestore';
+import { hydrateLeads } from '@/lib/firebase/hydration';
 
 export async function GET(req: NextRequest) {
   try {
+    await ensureDatabaseTables();
+    await hydrateLeads();
+
     const { user, error } = await requireAuth('leads.view');
     if (error) return error;
 
@@ -101,6 +105,7 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   try {
+    await ensureDatabaseTables();
     const { user, error } = await requireAuth('leads.create');
     if (error) return error;
 

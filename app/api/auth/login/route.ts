@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import { prisma, ensureDatabaseTables } from '@/lib/prisma';
 import { verifyPassword, hashPassword } from '@/lib/auth/passwords';
 import { createSession } from '@/lib/auth/session';
 
 async function autoSeedDefaultAccounts() {
   try {
+    await ensureDatabaseTables();
     const count = await prisma.user.count();
     if (count === 0) {
       console.log('[Auto-Seed] Seeding initial default CRM accounts...');

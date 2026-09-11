@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import { prisma, ensureDatabaseTables } from '@/lib/prisma';
 import {
   format,
   subDays,
@@ -68,6 +68,7 @@ function summarizeCalls(callsList: { callResult: string; customerResponse: strin
 
 async function hydrateFromFirestoreOrSeed() {
   try {
+    await ensureDatabaseTables();
     const leadCount = await prisma.lead.count();
     if (leadCount === 0) {
       console.log('[Firestore Hydrate] Checking Firebase Firestore for existing records...');

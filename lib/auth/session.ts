@@ -1,7 +1,7 @@
 import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
 import { SignJWT, jwtVerify } from 'jose';
-import { prisma } from '@/lib/prisma';
+import { prisma, ensureDatabaseTables } from '@/lib/prisma';
 import { Permission, hasPermission } from './permissions';
 
 const COOKIE_NAME = 'crm_session';
@@ -98,6 +98,7 @@ export async function getCurrentUser(): Promise<AuthUser | null> {
 
     // Attempt DB user lookup, fallback to JWT payload for serverless/ephemeral environments
     try {
+      await ensureDatabaseTables();
       const user = await prisma.user.findUnique({
         where: { id: userId },
         select: {
