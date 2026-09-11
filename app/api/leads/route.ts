@@ -156,14 +156,68 @@ export async function POST(req: NextRequest) {
 
     let assignedUser = null;
     if (assignedToId) {
-      assignedUser = await prisma.user.findUnique({
-        where: { id: assignedToId },
-      });
+      try {
+        assignedUser = await prisma.user.findUnique({
+          where: { id: assignedToId },
+        });
+      } catch (e) {}
     }
 
-    // Create new lead in DB
-    const newLead = await prisma.lead.create({
-      data: {
+    let validCreatedById: string | null = null;
+    if (user?.id) {
+      try {
+        const u = await prisma.user.findUnique({ where: { id: user.id } });
+        if (u) validCreatedById = user.id;
+      } catch (e) {}
+    }
+
+    let newLead: any = null;
+    try {
+      newLead = await prisma.lead.create({
+        data: {
+          name: name.trim(),
+          mobile: mobile.trim(),
+          normalizedMobile,
+          email: email ? email.trim() : null,
+          company: company ? company.trim() : null,
+          city: city ? city.trim() : null,
+          source: source ? source.trim() : 'Direct',
+          initialRequirements: initialRequirements ? initialRequirements.trim() : null,
+          notes: notes ? notes.trim() : null,
+          status: 'NEW',
+          assignedToId: assignedToId || null,
+          createdById: validCreatedById,
+          activities: {
+            create: {
+              userId: validCreatedById,
+              userName: user.name,
+              activityType: 'LEAD_CREATED',
+              description: assignedUser
+                ? `Lead Created by ${user.name} and assigned to ${assignedUser.name}`
+                : `Lead Created by ${user.name}`,
+            },
+          },
+        },
+        include: {
+          assignedTo: {
+            select: { id: true, name: true, email: true, role: true },
+          },
+          calls: true,
+          followUps: true,
+          activities: true,
+        },
+      });
+    } catch (dbCreateErr: any) {
+      console.warn('[Prisma Lead Create Warning - Fallback to Firestore Sync]:', dbCreateErr);
+      if (dbCreateErr.code === 'P2002') {
+        return NextResponse.json(
+          { error: 'This mobile number already exists.' },
+          { status: 409 }
+        );
+      }
+      const fallbackId = `lead_${Date.now()}_${Math.random().toString(36).substr(2, 6)}`;
+      newLead = {
+        id: fallbackId,
         name: name.trim(),
         mobile: mobile.trim(),
         normalizedMobile,
@@ -175,40 +229,21 @@ export async function POST(req: NextRequest) {
         notes: notes ? notes.trim() : null,
         status: 'NEW',
         assignedToId: assignedToId || null,
-        createdById: user.id,
-        activities: {
-          create: {
-            userId: user.id,
-            userName: user.name,
-            activityType: 'LEAD_CREATED',
-            description: assignedUser
-              ? `Lead Created by ${user.name} and assigned to ${assignedUser.name}`
-              : `Lead Created by ${user.name}`,
-          },
-        },
-      },
-      include: {
-        assignedTo: {
-          select: { id: true, name: true, email: true, role: true },
-        },
-        calls: true,
-        followUps: true,
-        activities: true,
-      },
-    });
+        createdById: validCreatedById,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        calls: [],
+        followUps: [],
+        activities: [],
+      };
+    }
 
     // Sync to Cloud Firestore in background
-    syncToFirestore('leads', newLead.id, newLead);
+    await syncToFirestore('leads', newLead.id, newLead);
 
     return NextResponse.json(newLead, { status: 201 });
   } catch (err: any) {
     console.error('Error creating lead:', err);
-    if (err.code === 'P2002') {
-      return NextResponse.json(
-        { error: 'This mobile number already exists.' },
-        { status: 409 }
-      );
-    }
     return NextResponse.json({ error: 'Failed to create lead' }, { status: 500 });
   }
 }
