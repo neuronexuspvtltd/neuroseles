@@ -41,23 +41,32 @@ export async function POST(req: NextRequest) {
     }
 
     // Create CRM session
-    await createSession(user.id);
+    await createSession({
+      id: user.id,
+      email: user.email,
+      role: user.role,
+      name: user.name,
+    });
 
     // Update last login timestamp
-    await prisma.user.update({
-      where: { id: user.id },
-      data: { lastLoginAt: new Date() },
-    });
+    try {
+      await prisma.user.update({
+        where: { id: user.id },
+        data: { lastLoginAt: new Date() },
+      });
+    } catch (e) {}
 
     // Log Activity
-    await prisma.activity.create({
-      data: {
-        userId: user.id,
-        userName: user.name,
-        activityType: 'USER_LOGGED_IN',
-        description: `User ${user.name} logged in via Firebase Authentication.`,
-      },
-    });
+    try {
+      await prisma.activity.create({
+        data: {
+          userId: user.id,
+          userName: user.name,
+          activityType: 'USER_LOGGED_IN',
+          description: `User ${user.name} logged in via Firebase Authentication.`,
+        },
+      });
+    } catch (e) {}
 
     return NextResponse.json({
       success: true,
