@@ -13,13 +13,18 @@ export async function GET(req: Request) {
     const search = searchParams.get('search') || '';
     const status = searchParams.get('status') || 'ALL';
     const dateFilter = searchParams.get('dateFilter') || 'all';
+    const clientDate = searchParams.get('clientDate');
     const page = parseInt(searchParams.get('page') || '1', 10);
     const limit = parseInt(searchParams.get('limit') || '50', 10);
 
-    const todayStr = format(new Date(), 'yyyy-MM-dd');
-    const tomorrowStr = format(addDays(new Date(), 1), 'yyyy-MM-dd');
-    const weekStartStr = format(startOfWeek(new Date(), { weekStartsOn: 1 }), 'yyyy-MM-dd');
-    const weekEndStr = format(endOfWeek(new Date(), { weekStartsOn: 1 }), 'yyyy-MM-dd');
+    const baseDate = clientDate && /^\d{4}-\d{2}-\d{2}$/.test(clientDate)
+      ? new Date(clientDate + 'T00:00:00')
+      : new Date(new Date().getTime() + 5.5 * 60 * 60 * 1000);
+
+    const todayStr = clientDate || format(baseDate, 'yyyy-MM-dd');
+    const tomorrowStr = format(addDays(baseDate, 1), 'yyyy-MM-dd');
+    const weekStartStr = format(startOfWeek(baseDate, { weekStartsOn: 1 }), 'yyyy-MM-dd');
+    const weekEndStr = format(endOfWeek(baseDate, { weekStartsOn: 1 }), 'yyyy-MM-dd');
 
     const where: any = {};
 
@@ -90,8 +95,19 @@ export async function GET(req: Request) {
           ...d,
           lead: d.lead || { name: 'Lead', mobile: '' },
         }));
-        if (status !== 'ALL') {
+        if (status === 'TODAY') {
+          filtered = filtered.filter((d) => d.demoDate === todayStr && d.status === 'SCHEDULED');
+        } else if (status === 'UPCOMING') {
+          filtered = filtered.filter((d) => d.demoDate > todayStr && d.status === 'SCHEDULED');
+        } else if (status !== 'ALL') {
           filtered = filtered.filter((d) => d.status === status);
+        }
+        if (dateFilter === 'today') {
+          filtered = filtered.filter((d) => d.demoDate === todayStr);
+        } else if (dateFilter === 'tomorrow') {
+          filtered = filtered.filter((d) => d.demoDate === tomorrowStr);
+        } else if (dateFilter === 'this_week') {
+          filtered = filtered.filter((d) => d.demoDate >= weekStartStr && d.demoDate <= weekEndStr);
         }
         demos = filtered.slice(skip, skip + limit);
         totalCount = filtered.length;

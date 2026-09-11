@@ -37,10 +37,12 @@ export default function DemosPage() {
   const fetchDemos = useCallback(async () => {
     setLoading(true);
     try {
+      const clientToday = new Date().toLocaleDateString('sv');
       const params = new URLSearchParams({
         search,
         status: statusFilter,
         dateFilter,
+        clientDate: clientToday,
       });
 
       const res = await fetch(`/api/demos?${params.toString()}`);

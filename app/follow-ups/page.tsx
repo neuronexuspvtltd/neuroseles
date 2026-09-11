@@ -47,7 +47,8 @@ export default function FollowUpsPage() {
   const fetchFollowUps = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await fetch('/api/follow-ups');
+      const clientToday = new Date().toLocaleDateString('sv');
+      const res = await fetch(`/api/follow-ups?clientDate=${clientToday}`);
       if (res.ok) {
         const data = await res.json();
         setTodayList(data.todayFollowUps || []);

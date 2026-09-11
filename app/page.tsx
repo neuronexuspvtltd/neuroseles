@@ -67,7 +67,8 @@ export default function DashboardPage() {
     setLoading(true);
     setError(null);
     try {
-      let url = `/api/dashboard/stats?period=${period}`;
+      const clientToday = new Date().toLocaleDateString('sv');
+      let url = `/api/dashboard/stats?period=${period}&clientDate=${clientToday}`;
       if (period === 'custom' && startDate && endDate) {
         url += `&startDate=${startDate}&endDate=${endDate}`;
       }

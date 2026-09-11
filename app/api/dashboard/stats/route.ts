@@ -316,9 +316,14 @@ export async function GET(req: Request) {
     const period = searchParams.get('period') || 'all';
     const customStart = searchParams.get('startDate');
     const customEnd = searchParams.get('endDate');
+    const clientDate = searchParams.get('clientDate');
 
-    const now = new Date();
-    const todayStr = format(now, 'yyyy-MM-dd');
+    const baseDate = clientDate && /^\d{4}-\d{2}-\d{2}$/.test(clientDate)
+      ? new Date(clientDate + 'T00:00:00')
+      : new Date(new Date().getTime() + 5.5 * 60 * 60 * 1000);
+
+    const now = baseDate;
+    const todayStr = clientDate || format(now, 'yyyy-MM-dd');
 
     // Determine Date Ranges for filtering
     let periodStart: Date | null = null;

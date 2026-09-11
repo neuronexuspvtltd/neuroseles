@@ -8,7 +8,14 @@ export async function GET(req: Request) {
   try {
     await ensureDatabaseTables();
     await hydrateFollowUps();
-    const todayStr = format(new Date(), 'yyyy-MM-dd');
+    const { searchParams } = new URL(req.url);
+    const clientDate = searchParams.get('clientDate');
+
+    const baseDate = clientDate && /^\d{4}-\d{2}-\d{2}$/.test(clientDate)
+      ? new Date(clientDate + 'T00:00:00')
+      : new Date(new Date().getTime() + 5.5 * 60 * 60 * 1000);
+
+    const todayStr = clientDate || format(baseDate, 'yyyy-MM-dd');
 
     let allPending: any[] = [];
     let todayFollowUps: any[] = [];
