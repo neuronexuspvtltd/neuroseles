@@ -97,6 +97,25 @@ export const LeadTable: React.FC<LeadTableProps> = ({
                 ? lead.name.split(' ').map((n) => n[0]).join('').substring(0, 2).toUpperCase()
                 : 'LD';
 
+              // Determine Last Contact date accurately
+              let lastContactFormatted = 'Never';
+              if (lastCall && lastCall.createdAt) {
+                try {
+                  lastContactFormatted = format(parseISO(lastCall.createdAt), 'dd MMM yyyy');
+                } catch (e) {
+                  lastContactFormatted = 'Contacted';
+                }
+              } else if (lead.status && lead.status !== 'NEW') {
+                const fallbackDate = lead.updatedAt || lead.createdAt;
+                if (fallbackDate) {
+                  try {
+                    lastContactFormatted = format(parseISO(fallbackDate), 'dd MMM yyyy');
+                  } catch (e) {
+                    lastContactFormatted = 'Contacted';
+                  }
+                }
+              }
+
               return (
                 <tr key={lead.id} className="hover:bg-slate-50/80 transition-colors group">
                   <td className="py-3.5 px-5 font-bold text-slate-900">
@@ -127,9 +146,9 @@ export const LeadTable: React.FC<LeadTableProps> = ({
                     <StatusBadge status={lead.status} />
                   </td>
                   <td className="py-3.5 px-5 text-xs text-slate-500">
-                    {lastCall ? (
+                    {lastContactFormatted !== 'Never' ? (
                       <span className="font-semibold text-slate-700">
-                        {format(parseISO(lastCall.createdAt), 'dd MMM yyyy')}
+                        {lastContactFormatted}
                       </span>
                     ) : (
                       <span className="text-slate-400 font-normal">Never</span>
@@ -205,6 +224,24 @@ export const LeadTable: React.FC<LeadTableProps> = ({
           const pendingFollowUp =
             lead.followUps && lead.followUps.length > 0 ? lead.followUps[0] : null;
 
+          let lastContactFormatted = 'Never';
+          if (lastCall && lastCall.createdAt) {
+            try {
+              lastContactFormatted = format(parseISO(lastCall.createdAt), 'dd MMM yyyy');
+            } catch (e) {
+              lastContactFormatted = 'Contacted';
+            }
+          } else if (lead.status && lead.status !== 'NEW') {
+            const fallbackDate = lead.updatedAt || lead.createdAt;
+            if (fallbackDate) {
+              try {
+                lastContactFormatted = format(parseISO(fallbackDate), 'dd MMM yyyy');
+              } catch (e) {
+                lastContactFormatted = 'Contacted';
+              }
+            }
+          }
+
           return (
             <div
               key={lead.id}
@@ -236,9 +273,7 @@ export const LeadTable: React.FC<LeadTableProps> = ({
                   <Calendar className="w-3.5 h-3.5 text-slate-400" />
                   <span>
                     Last Contact:{' '}
-                    {lastCall
-                      ? format(parseISO(lastCall.createdAt), 'dd MMM yyyy')
-                      : 'Never'}
+                    <strong className="text-slate-800 font-semibold">{lastContactFormatted}</strong>
                   </span>
                 </div>
                 {pendingFollowUp && (

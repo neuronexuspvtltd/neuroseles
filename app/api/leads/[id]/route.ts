@@ -173,6 +173,28 @@ export async function PATCH(
         activityType: 'STATUS_CHANGED',
         description: `Status Changed to ${status.replace('_', ' ')} by ${user.name}`,
       });
+
+      // Auto-record call if moving from NEW to any contacted state and no calls recorded yet
+      if (existingLead.status === 'NEW' && status !== 'NEW') {
+        try {
+          const callCount = await prisma.call.count({ where: { leadId: id } });
+          if (callCount === 0) {
+            const todayStr = new Date().toISOString().split('T')[0];
+            await prisma.call.create({
+              data: {
+                leadId: id,
+                callDate: todayStr,
+                callTime: '10:00',
+                callResult: 'Call Received',
+                customerResponse: status === 'DEMO' ? 'Demo Required' : status === 'QUOTATION' ? 'Quotation Required' : status === 'INTERESTED' ? 'Interested' : 'General Call',
+                notes: `Status updated to ${status}`,
+              },
+            });
+          }
+        } catch (callErr) {
+          console.warn('[Auto Call Create Warning]:', callErr);
+        }
+      }
     }
 
     let updatedLead: any = null;
