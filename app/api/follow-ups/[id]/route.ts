@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { syncToFirestore } from '@/lib/firebase/firestore';
 
 export async function PATCH(
   req: Request,
@@ -37,6 +38,8 @@ export async function PATCH(
         }),
       ]);
 
+      syncToFirestore('followups', updatedFollowUp.id, updatedFollowUp).catch(console.warn);
+
       return NextResponse.json(updatedFollowUp);
     }
 
@@ -49,7 +52,7 @@ export async function PATCH(
       }
 
       // Mark current follow-up as RESCHEDULED / COMPLETED and create a new follow-up record to retain history!
-      const [oldFollowUp, newFollowUp] = await prisma.$transaction([
+      const [oldFollowUp, newFollowUp, updatedLead] = await prisma.$transaction([
         prisma.followUp.update({
           where: { id },
           data: {
@@ -81,6 +84,10 @@ export async function PATCH(
           },
         }),
       ]);
+
+      syncToFirestore('followups', oldFollowUp.id, oldFollowUp).catch(console.warn);
+      syncToFirestore('followups', newFollowUp.id, newFollowUp).catch(console.warn);
+      syncToFirestore('leads', existingFollowUp.leadId, updatedLead).catch(console.warn);
 
       return NextResponse.json({ oldFollowUp, newFollowUp });
     }

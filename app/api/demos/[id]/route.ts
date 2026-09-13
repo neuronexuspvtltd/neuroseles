@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { CUSTOMER_RESPONSE_STATUS_MAP, LeadStatus } from '@/lib/statusConfig';
+import { syncToFirestore, deleteFromFirestore } from '@/lib/firebase/firestore';
 
 export async function GET(
   req: Request,
@@ -82,7 +83,7 @@ export async function PATCH(
         );
       }
 
-      const [oldDemo, newDemo] = await prisma.$transaction([
+      const [oldDemo, newDemo, updatedLead] = await prisma.$transaction([
         prisma.demo.update({
           where: { id },
           data: {
@@ -126,6 +127,10 @@ export async function PATCH(
         }),
       ]);
 
+      syncToFirestore('demos', oldDemo.id, oldDemo).catch(console.warn);
+      syncToFirestore('demos', newDemo.id, newDemo).catch(console.warn);
+      syncToFirestore('leads', leadId, updatedLead).catch(console.warn);
+
       return NextResponse.json({ oldDemo, newDemo });
     }
 
@@ -159,7 +164,7 @@ export async function PATCH(
         newLeadStatus = 'FOLLOW_UP';
         // Create follow-up record in existing FollowUp table!
         if (followUpDate && followUpTime) {
-          await prisma.followUp.create({
+          const newFollowUp = await prisma.followUp.create({
             data: {
               leadId,
               followUpDate,
@@ -168,6 +173,7 @@ export async function PATCH(
               status: 'PENDING',
             },
           });
+          syncToFirestore('followups', newFollowUp.id, newFollowUp).catch(console.warn);
           activitiesToCreate.push({
             activityType: 'FOLLOW_UP_SCHEDULED',
             description: `Follow-up Scheduled after demo for ${followUpDate} at ${followUpTime}`,
@@ -210,12 +216,15 @@ export async function PATCH(
         }),
       ]);
 
+      syncToFirestore('demos', updatedDemo.id, updatedDemo).catch(console.warn);
+      syncToFirestore('leads', leadId, updatedLead).catch(console.warn);
+
       return NextResponse.json({ demo: updatedDemo, lead: updatedLead });
     }
 
     // ACTION: CANCEL DEMO
     if (action === 'CANCEL') {
-      const [updatedDemo] = await prisma.$transaction([
+      const [updatedDemo, updatedLead] = await prisma.$transaction([
         prisma.demo.update({
           where: { id },
           data: {
@@ -238,12 +247,16 @@ export async function PATCH(
           },
         }),
       ]);
+
+      syncToFirestore('demos', updatedDemo.id, updatedDemo).catch(console.warn);
+      syncToFirestore('leads', leadId, updatedLead).catch(console.warn);
+
       return NextResponse.json(updatedDemo);
     }
 
     // ACTION: NO SHOW
     if (action === 'NO_SHOW') {
-      const [updatedDemo] = await prisma.$transaction([
+      const [updatedDemo, updatedLead] = await prisma.$transaction([
         prisma.demo.update({
           where: { id },
           data: {
@@ -266,6 +279,10 @@ export async function PATCH(
           },
         }),
       ]);
+
+      syncToFirestore('demos', updatedDemo.id, updatedDemo).catch(console.warn);
+      syncToFirestore('leads', leadId, updatedLead).catch(console.warn);
+
       return NextResponse.json(updatedDemo);
     }
 
@@ -286,6 +303,59 @@ export async function PATCH(
       where: { id },
       data: updateData,
     });
+
+    let updatedLead: any = null;
+    if (leadId) {
+      const leadUpdateData: any = {};
+      if (demoDate) leadUpdateData.demoDate = demoDate;
+      if (demoTime) leadUpdateData.demoTime = demoTime;
+      if (demoLink !== undefined) leadUpdateData.demoLink = demoLink;
+      if (meetingId !== undefined) leadUpdateData.meetingId = meetingId;
+      if (password !== undefined) leadUpdateData.password = password;
+
+      if (Object.keys(leadUpdateData).length > 0) {
+        try {
+          updatedLead = await prisma.lead.update({
+            where: { id: leadId },
+            data: leadUpdateData,
+          });
+        } catch (e) {}
+      }
+
+      // Sync date/time across all other SCHEDULED demos for this lead to prevent conflicting dates
+      if (demoDate || demoTime) {
+        try {
+          const otherScheduledDemos = await prisma.demo.findMany({
+            where: {
+              leadId,
+              status: 'SCHEDULED',
+              id: { not: id },
+            },
+          });
+
+          for (const otherDemo of otherScheduledDemos) {
+            const syncedOther = await prisma.demo.update({
+              where: { id: otherDemo.id },
+              data: {
+                ...(demoDate ? { demoDate } : {}),
+                ...(demoTime ? { demoTime } : {}),
+              },
+            });
+            syncToFirestore('demos', syncedOther.id, syncedOther).catch(console.warn);
+          }
+        } catch (e) {}
+      }
+    }
+
+    syncToFirestore('demos', id, updatedDemo).catch(console.warn);
+    if (leadId) {
+      if (!updatedLead) {
+        try { updatedLead = await prisma.lead.findUnique({ where: { id: leadId } }); } catch (e) {}
+      }
+      if (updatedLead) {
+        syncToFirestore('leads', leadId, updatedLead).catch(console.warn);
+      }
+    }
 
     return NextResponse.json(updatedDemo);
   } catch (error: any) {
@@ -312,6 +382,8 @@ export async function DELETE(
     await prisma.demo.delete({
       where: { id },
     });
+
+    deleteFromFirestore('demos', id).catch(console.warn);
 
     if (existingDemo.leadId) {
       await prisma.activity.create({

@@ -25,13 +25,34 @@ export async function hydrateLeads() {
             initialRequirements: item.initialRequirements || null,
             notes: item.notes || null,
             status: item.status || 'NEW',
+            demoDate: item.demoDate || null,
+            demoTime: item.demoTime || null,
+            demoLink: item.demoLink || null,
+            meetingId: item.meetingId || null,
+            password: item.password || null,
+            demoStatus: item.demoStatus || null,
             assignedToId: item.assignedToId || null,
             createdById: item.createdById || null,
             createdAt: item.createdAt ? new Date(item.createdAt) : new Date(),
             updatedAt: item.updatedAt ? new Date(item.updatedAt) : new Date(),
           },
           update: {
+            name: item.name || undefined,
+            mobile: item.mobile || undefined,
+            normalizedMobile: normalizedMobile || undefined,
+            email: item.email !== undefined ? item.email : undefined,
+            company: item.company !== undefined ? item.company : undefined,
+            city: item.city !== undefined ? item.city : undefined,
+            source: item.source || undefined,
+            initialRequirements: item.initialRequirements !== undefined ? item.initialRequirements : undefined,
+            notes: item.notes !== undefined ? item.notes : undefined,
             status: item.status || undefined,
+            demoDate: item.demoDate !== undefined ? item.demoDate : undefined,
+            demoTime: item.demoTime !== undefined ? item.demoTime : undefined,
+            demoLink: item.demoLink !== undefined ? item.demoLink : undefined,
+            meetingId: item.meetingId !== undefined ? item.meetingId : undefined,
+            password: item.password !== undefined ? item.password : undefined,
+            demoStatus: item.demoStatus !== undefined ? item.demoStatus : undefined,
           },
         });
       } catch (e) {}
@@ -70,7 +91,14 @@ export async function hydrateClients() {
             updatedAt: item.updatedAt ? new Date(item.updatedAt) : new Date(),
           },
           update: {
+            name: item.name || undefined,
+            mobile: item.mobile || undefined,
+            email: item.email !== undefined ? item.email : undefined,
+            company: item.company !== undefined ? item.company : undefined,
+            city: item.city !== undefined ? item.city : undefined,
+            address: item.address !== undefined ? item.address : undefined,
             status: item.status || undefined,
+            notes: item.notes !== undefined ? item.notes : undefined,
           },
         });
       } catch (e) {}
@@ -101,7 +129,13 @@ export async function hydrateCalls() {
             notes: item.notes || null,
             createdAt: item.createdAt ? new Date(item.createdAt) : new Date(),
           },
-          update: {},
+          update: {
+            callDate: item.callDate || undefined,
+            callTime: item.callTime || undefined,
+            callResult: item.callResult || undefined,
+            customerResponse: item.customerResponse || undefined,
+            notes: item.notes !== undefined ? item.notes : undefined,
+          },
         });
       } catch (e) {}
     }
@@ -138,7 +172,17 @@ export async function hydrateDemos() {
             updatedAt: item.updatedAt ? new Date(item.updatedAt) : new Date(),
           },
           update: {
+            demoDate: item.demoDate || undefined,
+            demoTime: item.demoTime || undefined,
+            duration: item.duration || undefined,
             status: item.status || undefined,
+            demoLink: item.demoLink !== undefined ? item.demoLink : undefined,
+            meetingId: item.meetingId !== undefined ? item.meetingId : undefined,
+            password: item.password !== undefined ? item.password : undefined,
+            requirements: item.requirements !== undefined ? item.requirements : undefined,
+            notes: item.notes !== undefined ? item.notes : undefined,
+            demoResult: item.demoResult !== undefined ? item.demoResult : undefined,
+            updatedAt: item.updatedAt ? new Date(item.updatedAt) : new Date(),
           },
         });
       } catch (e) {}
@@ -170,7 +214,11 @@ export async function hydrateFollowUps() {
             updatedAt: item.updatedAt ? new Date(item.updatedAt) : new Date(),
           },
           update: {
+            followUpDate: item.followUpDate || undefined,
+            followUpTime: item.followUpTime || undefined,
+            note: item.note !== undefined ? item.note : undefined,
             status: item.status || undefined,
+            updatedAt: item.updatedAt ? new Date(item.updatedAt) : new Date(),
           },
         });
       } catch (e) {}
@@ -207,7 +255,14 @@ export async function hydrateQuotations() {
             updatedAt: item.updatedAt ? new Date(item.updatedAt) : new Date(),
           },
           update: {
+            projectTitle: item.projectTitle || undefined,
+            projectDescription: item.projectDescription !== undefined ? item.projectDescription : undefined,
+            quotationDate: item.quotationDate || undefined,
+            validUntil: item.validUntil || undefined,
             status: item.status || undefined,
+            grandTotal: item.grandTotal !== undefined ? item.grandTotal : undefined,
+            subtotal: item.subtotal !== undefined ? item.subtotal : undefined,
+            updatedAt: item.updatedAt ? new Date(item.updatedAt) : new Date(),
           },
         });
       } catch (e) {}
