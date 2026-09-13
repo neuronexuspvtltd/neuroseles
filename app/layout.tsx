@@ -5,9 +5,13 @@ export const metadata: Metadata = {
   title: "Neuronexus - Next-Gen Intelligence | Lead CRM",
   description: "Production-ready Lead Management CRM for Neuronexus Next-Gen Intelligence.",
   icons: {
-    icon: "/logo.png",
-    shortcut: "/logo.png",
-    apple: "/logo.png",
+    icon: [
+      { url: "/favicon.ico" },
+      { url: "/favicon.png", type: "image/png" },
+      { url: "/icon.png", type: "image/png" },
+    ],
+    shortcut: "/favicon.ico",
+    apple: "/apple-icon.png",
   },
 };
 
