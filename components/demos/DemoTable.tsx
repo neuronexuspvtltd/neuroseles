@@ -74,67 +74,78 @@ export const DemoTable: React.FC<DemoTableProps> = ({
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'SCHEDULED':
-        return <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-purple-50 text-purple-700 border border-purple-200">Scheduled</span>;
+        return <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-purple-50 text-purple-700 border border-purple-200/80 shadow-2xs">Scheduled</span>;
       case 'COMPLETED':
-        return <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">Completed</span>;
+        return <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200/80 shadow-2xs">Completed</span>;
       case 'RESCHEDULED':
-        return <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-50 text-amber-700 border border-amber-200">Rescheduled</span>;
+        return <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-amber-50 text-amber-700 border border-amber-200/80 shadow-2xs">Rescheduled</span>;
       case 'CANCELLED':
-        return <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-rose-50 text-rose-700 border border-rose-200">Cancelled</span>;
+        return <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-rose-50 text-rose-700 border border-rose-200/80 shadow-2xs">Cancelled</span>;
       case 'NO_SHOW':
-        return <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-700 border border-slate-300">No Show</span>;
+        return <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-slate-100 text-slate-700 border border-slate-200 shadow-2xs">No Show</span>;
       default:
-        return <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-700">{status}</span>;
+        return <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-slate-100 text-slate-700">{status}</span>;
     }
   };
 
   return (
     <div className="space-y-4">
       {/* Desktop Table */}
-      <div className="hidden md:block bg-white rounded-xl border border-slate-200 shadow-xs overflow-hidden">
+      <div className="hidden md:block bg-white rounded-2xl border border-slate-200/80 shadow-xs overflow-hidden">
         <table className="w-full text-left border-collapse">
           <thead>
-            <tr className="bg-slate-50/80 border-b border-slate-200 text-[11px] font-bold uppercase tracking-wider text-slate-500">
-              <th className="py-3.5 px-4">Lead</th>
-              <th className="py-3.5 px-4">Mobile</th>
-              <th className="py-3.5 px-4">Company</th>
-              <th className="py-3.5 px-4">Demo Date</th>
-              <th className="py-3.5 px-4">Time</th>
-              <th className="py-3.5 px-4">Demo Status</th>
-              <th className="py-3.5 px-4">Assigned To</th>
-              <th className="py-3.5 px-4 text-right">Actions</th>
+            <tr className="bg-slate-50/90 border-b border-slate-200/80 text-[10px] font-black uppercase tracking-widest text-slate-400">
+              <th className="py-4 px-5">Lead</th>
+              <th className="py-4 px-5">Mobile</th>
+              <th className="py-4 px-5">Company</th>
+              <th className="py-4 px-5">Demo Date</th>
+              <th className="py-4 px-5">Time</th>
+              <th className="py-4 px-5">Demo Status</th>
+              <th className="py-4 px-5">Assigned To</th>
+              <th className="py-4 px-5 text-right">Actions</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100 text-sm">
-            {demos.map((demo) => (
-              <tr key={demo.id} className="hover:bg-slate-50/70 transition-colors">
-                <td className="py-3.5 px-4 font-semibold text-slate-900">
-                  <Link
-                    href={`/demos/${demo.id}`}
-                    className="hover:text-purple-600 transition-colors"
-                  >
-                    {demo.lead.name}
-                  </Link>
-                </td>
-                <td className="py-3.5 px-4 text-slate-600 font-mono text-xs">
-                  {formatPhoneNumber(demo.lead.mobile)}
-                </td>
-                <td className="py-3.5 px-4 text-slate-600">
-                  {demo.lead.company || '-'}
-                </td>
-                <td className="py-3.5 px-4 text-xs font-medium text-slate-800">
-                  {demo.demoDate}
-                </td>
-                <td className="py-3.5 px-4 text-xs text-slate-600">
-                  {demo.demoTime}
-                </td>
-                <td className="py-3.5 px-4">
-                  {getStatusBadge(demo.status)}
-                </td>
-                <td className="py-3.5 px-4 text-xs text-slate-500">
-                  {demo.assignedTo || 'Sales Rep'}
-                </td>
-                <td className="py-3.5 px-4 text-right">
+          <tbody className="divide-y divide-slate-100 text-xs font-medium">
+            {demos.map((demo) => {
+              const initials = demo.lead.name
+                ? demo.lead.name.split(' ').map((n) => n[0]).join('').substring(0, 2).toUpperCase()
+                : 'LD';
+
+              return (
+                <tr key={demo.id} className="hover:bg-slate-50/80 transition-colors group">
+                  <td className="py-3.5 px-5 font-bold text-slate-900">
+                    <Link
+                      href={`/demos/${demo.id}`}
+                      className="hover:text-purple-600 transition-colors flex items-center gap-3"
+                    >
+                      <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-purple-600 to-indigo-600 text-white font-bold text-xs flex items-center justify-center shrink-0 shadow-2xs group-hover:scale-105 transition-transform">
+                        {initials}
+                      </div>
+                      <span className="truncate max-w-[150px]">{demo.lead.name}</span>
+                    </Link>
+                  </td>
+                  <td className="py-3.5 px-5 text-slate-600 font-mono text-xs">
+                    {formatPhoneNumber(demo.lead.mobile)}
+                  </td>
+                  <td className="py-3.5 px-5 text-slate-600 font-medium">
+                    {demo.lead.company || '-'}
+                  </td>
+                  <td className="py-3.5 px-5 text-xs font-bold text-slate-900">
+                    <span className="inline-flex items-center gap-1.5">
+                      <Calendar className="w-3.5 h-3.5 text-purple-600" />
+                      {demo.demoDate}
+                    </span>
+                  </td>
+                  <td className="py-3.5 px-5 text-xs font-semibold text-slate-700">
+                    {demo.demoTime}
+                  </td>
+                  <td className="py-3.5 px-5">
+                    {getStatusBadge(demo.status)}
+                  </td>
+                  <td className="py-3.5 px-5 text-xs text-slate-500 font-medium">
+                    {demo.assignedTo || 'Sales Rep'}
+                  </td>
+                  <td className="py-3.5 px-5 text-right">
                   <div className="flex items-center justify-end gap-1.5">
                     <WhatsAppButton
                       href={getDemoWhatsAppLink(demo)}
@@ -183,8 +194,9 @@ export const DemoTable: React.FC<DemoTableProps> = ({
                   </div>
                 </td>
               </tr>
-            ))}
-          </tbody>
+            );
+          })}
+        </tbody>
         </table>
       </div>
 

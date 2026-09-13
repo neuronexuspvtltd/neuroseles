@@ -88,62 +88,70 @@ export const QuotationTable: React.FC<QuotationTableProps> = ({
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'DRAFT':
-        return <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-700 border border-slate-300">Draft</span>;
+        return <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-slate-100 text-slate-700 border border-slate-200/80 shadow-2xs">Draft</span>;
       case 'SENT':
-        return <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-indigo-50 text-indigo-700 border border-indigo-200">Sent</span>;
+        return <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-indigo-50 text-indigo-700 border border-indigo-200/80 shadow-2xs">Sent</span>;
       case 'VIEWED':
-        return <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-purple-50 text-purple-700 border border-purple-200">Viewed</span>;
+        return <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-purple-50 text-purple-700 border border-purple-200/80 shadow-2xs">Viewed</span>;
       case 'ACCEPTED':
-        return <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">Accepted</span>;
+        return <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200/80 shadow-2xs">Accepted</span>;
       case 'REJECTED':
-        return <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-rose-50 text-rose-700 border border-rose-200">Rejected</span>;
+        return <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-rose-50 text-rose-700 border border-rose-200/80 shadow-2xs">Rejected</span>;
       case 'EXPIRED':
-        return <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-50 text-amber-700 border border-amber-200">Expired</span>;
+        return <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-amber-50 text-amber-700 border border-amber-200/80 shadow-2xs">Expired</span>;
       case 'REVISED':
-        return <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-cyan-50 text-cyan-700 border border-cyan-200">Revised</span>;
+        return <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-cyan-50 text-cyan-700 border border-cyan-200/80 shadow-2xs">Revised</span>;
       default:
-        return <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-700">{status}</span>;
+        return <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-slate-100 text-slate-700">{status}</span>;
     }
   };
 
   return (
     <div className="space-y-4">
       {/* Desktop Table */}
-      <div className="hidden md:block bg-white rounded-xl border border-slate-200 shadow-xs overflow-hidden">
+      <div className="hidden md:block bg-white rounded-2xl border border-slate-200/80 shadow-xs overflow-hidden">
         <table className="w-full text-left border-collapse">
           <thead>
-            <tr className="bg-slate-50/80 border-b border-slate-200 text-[11px] font-bold uppercase tracking-wider text-slate-500">
-              <th className="py-3.5 px-4">Quotation No.</th>
-              <th className="py-3.5 px-4">Client</th>
-              <th className="py-3.5 px-4">Project Title</th>
-              <th className="py-3.5 px-4">Created Date</th>
-              <th className="py-3.5 px-4">Valid Until</th>
-              <th className="py-3.5 px-4 text-right">Total Amount</th>
-              <th className="py-3.5 px-4">Status</th>
-              <th className="py-3.5 px-4 text-right">Actions</th>
+            <tr className="bg-slate-50/90 border-b border-slate-200/80 text-[10px] font-black uppercase tracking-widest text-slate-400">
+              <th className="py-4 px-5">Quotation No.</th>
+              <th className="py-4 px-5">Client</th>
+              <th className="py-4 px-5">Project Title</th>
+              <th className="py-4 px-5">Created Date</th>
+              <th className="py-4 px-5">Valid Until</th>
+              <th className="py-4 px-5 text-right">Total Amount</th>
+              <th className="py-4 px-5">Status</th>
+              <th className="py-4 px-5 text-right">Actions</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100 text-sm">
-            {quotations.map((q) => (
-              <tr key={q.id} className="hover:bg-slate-50/70 transition-colors">
-                <td className="py-3.5 px-4 font-mono font-bold text-indigo-700 text-xs">
-                  <Link href={`/quotations/${q.id}`} className="hover:underline flex items-center gap-1">
-                    <span>{q.quotationNumber}</span>
-                    {q.revisionNumber > 0 && (
-                      <span className="text-[10px] px-1 py-0.2 bg-cyan-100 text-cyan-800 rounded font-sans">
-                        R{q.revisionNumber}
-                      </span>
+          <tbody className="divide-y divide-slate-100 text-xs font-medium">
+            {quotations.map((q) => {
+              const initials = q.lead.name
+                ? q.lead.name.split(' ').map((n) => n[0]).join('').substring(0, 2).toUpperCase()
+                : 'QT';
+
+              return (
+                <tr key={q.id} className="hover:bg-slate-50/80 transition-colors group">
+                  <td className="py-3.5 px-5 font-mono font-bold text-teal-700 text-xs">
+                    <Link href={`/quotations/${q.id}`} className="hover:underline flex items-center gap-1.5">
+                      <span>{q.quotationNumber}</span>
+                      {q.revisionNumber > 0 && (
+                        <span className="text-[9px] font-bold px-1.5 py-0.5 bg-cyan-100 text-cyan-800 rounded-md font-sans uppercase">
+                          R{q.revisionNumber}
+                        </span>
+                      )}
+                    </Link>
+                  </td>
+                  <td className="py-3.5 px-5 font-bold text-slate-900">
+                    <Link href={`/leads/${q.lead.id}`} className="hover:text-teal-600 transition-colors flex items-center gap-2.5">
+                      <div className="w-7 h-7 rounded-full bg-gradient-to-tr from-cyan-600 to-indigo-600 text-white font-bold text-[10px] flex items-center justify-center shrink-0 shadow-2xs">
+                        {initials}
+                      </div>
+                      <span className="truncate max-w-[140px]">{q.lead.name}</span>
+                    </Link>
+                    {q.lead.company && (
+                      <span className="block text-[11px] font-medium text-slate-400 pl-9.5">{q.lead.company}</span>
                     )}
-                  </Link>
-                </td>
-                <td className="py-3.5 px-4 font-semibold text-slate-900">
-                  <Link href={`/leads/${q.lead.id}`} className="hover:text-indigo-600">
-                    {q.lead.name}
-                  </Link>
-                  {q.lead.company && (
-                    <span className="block text-xs font-normal text-slate-500">{q.lead.company}</span>
-                  )}
-                </td>
+                  </td>
                 <td className="py-3.5 px-4 text-xs font-medium text-slate-700 max-w-xs truncate">
                   {q.projectTitle}
                 </td>
@@ -226,8 +234,9 @@ export const QuotationTable: React.FC<QuotationTableProps> = ({
                   </div>
                 </td>
               </tr>
-            ))}
-          </tbody>
+            );
+          })}
+        </tbody>
         </table>
       </div>
 

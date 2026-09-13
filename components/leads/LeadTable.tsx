@@ -74,63 +74,78 @@ export const LeadTable: React.FC<LeadTableProps> = ({
   return (
     <div className="space-y-4">
       {/* Desktop Table */}
-      <div className="hidden md:block bg-white rounded-xl border border-slate-200 shadow-xs overflow-hidden">
+      <div className="hidden md:block bg-white rounded-2xl border border-slate-200/80 shadow-xs overflow-hidden">
         <table className="w-full text-left border-collapse">
           <thead>
-            <tr className="bg-slate-50/80 border-b border-slate-200 text-[11px] font-bold uppercase tracking-wider text-slate-500">
-              <th className="py-3.5 px-4">Lead Name</th>
-              <th className="py-3.5 px-4">Mobile</th>
-              <th className="py-3.5 px-4">Company</th>
-              <th className="py-3.5 px-4">Status</th>
-              <th className="py-3.5 px-4">Last Contact</th>
-              <th className="py-3.5 px-4">Next Follow-up</th>
-              <th className="py-3.5 px-4 text-right">Actions</th>
+            <tr className="bg-slate-50/90 border-b border-slate-200/80 text-[10px] font-black uppercase tracking-widest text-slate-400">
+              <th className="py-4 px-5">Lead Name</th>
+              <th className="py-4 px-5">Mobile</th>
+              <th className="py-4 px-5">Company</th>
+              <th className="py-4 px-5">Status</th>
+              <th className="py-4 px-5">Last Contact</th>
+              <th className="py-4 px-5">Next Follow-up</th>
+              <th className="py-4 px-5 text-right">Actions</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100 text-sm">
+          <tbody className="divide-y divide-slate-100 text-xs font-medium">
             {leads.map((lead) => {
               const lastCall = lead.calls && lead.calls.length > 0 ? lead.calls[0] : null;
               const pendingFollowUp =
                 lead.followUps && lead.followUps.length > 0 ? lead.followUps[0] : null;
+              
+              const initials = lead.name
+                ? lead.name.split(' ').map((n) => n[0]).join('').substring(0, 2).toUpperCase()
+                : 'LD';
 
               return (
-                <tr key={lead.id} className="hover:bg-slate-50/70 transition-colors">
-                  <td className="py-3.5 px-4 font-semibold text-slate-900">
+                <tr key={lead.id} className="hover:bg-slate-50/80 transition-colors group">
+                  <td className="py-3.5 px-5 font-bold text-slate-900">
                     <Link
                       href={`/leads/${lead.id}`}
-                      className="hover:text-indigo-600 transition-colors flex items-center gap-1.5"
+                      className="hover:text-teal-600 transition-colors flex items-center gap-3"
                     >
-                      {lead.name}
+                      <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-teal-600 to-indigo-600 text-white font-bold text-xs flex items-center justify-center shrink-0 shadow-2xs group-hover:scale-105 transition-transform">
+                        {initials}
+                      </div>
+                      <span className="truncate max-w-[160px]">{lead.name}</span>
                     </Link>
                   </td>
-                  <td className="py-3.5 px-4 text-slate-600 font-mono text-xs">
+                  <td className="py-3.5 px-5 text-slate-600 font-mono text-xs">
                     {formatPhoneNumber(lead.mobile)}
                   </td>
-                  <td className="py-3.5 px-4 text-slate-600">
-                    {lead.company || '-'}
-                  </td>
-                  <td className="py-3.5 px-4">
-                    <StatusBadge status={lead.status} />
-                  </td>
-                  <td className="py-3.5 px-4 text-xs text-slate-500">
-                    {lastCall ? (
-                      <span>
-                        {format(parseISO(lastCall.createdAt), 'dd MMM yyyy')}
-                      </span>
-                    ) : (
-                      <span className="text-slate-400">Never</span>
-                    )}
-                  </td>
-                  <td className="py-3.5 px-4 text-xs">
-                    {pendingFollowUp ? (
-                      <span className="font-medium text-amber-700 bg-amber-50 px-2 py-0.5 rounded border border-amber-200/60">
-                        {pendingFollowUp.followUpDate} ({pendingFollowUp.followUpTime})
+                  <td className="py-3.5 px-5 text-slate-600 font-medium">
+                    {lead.company ? (
+                      <span className="flex items-center gap-1.5 text-slate-700">
+                        <Building2 className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                        <span className="truncate max-w-[140px]">{lead.company}</span>
                       </span>
                     ) : (
                       <span className="text-slate-400">-</span>
                     )}
                   </td>
-                  <td className="py-3.5 px-4 text-right">
+                  <td className="py-3.5 px-5">
+                    <StatusBadge status={lead.status} />
+                  </td>
+                  <td className="py-3.5 px-5 text-xs text-slate-500">
+                    {lastCall ? (
+                      <span className="font-semibold text-slate-700">
+                        {format(parseISO(lastCall.createdAt), 'dd MMM yyyy')}
+                      </span>
+                    ) : (
+                      <span className="text-slate-400 font-normal">Never</span>
+                    )}
+                  </td>
+                  <td className="py-3.5 px-5 text-xs">
+                    {pendingFollowUp ? (
+                      <span className="font-bold text-amber-800 bg-amber-50/90 px-2.5 py-1 rounded-full border border-amber-200/80 text-[11px] inline-flex items-center gap-1">
+                        <Calendar className="w-3 h-3 text-amber-600" />
+                        {pendingFollowUp.followUpDate}
+                      </span>
+                    ) : (
+                      <span className="text-slate-400">-</span>
+                    )}
+                  </td>
+                  <td className="py-3.5 px-5 text-right">
                     <div className="flex items-center justify-end gap-1.5">
                       <WhatsAppButton
                         href={getLeadWhatsAppLink(lead)}
@@ -140,38 +155,38 @@ export const LeadTable: React.FC<LeadTableProps> = ({
                       {onMarkCalled && (
                         <button
                           onClick={() => onMarkCalled(lead)}
-                          className="p-2 text-indigo-700 bg-indigo-50 hover:bg-indigo-100 rounded-lg border border-indigo-200 transition-colors"
+                          className="p-2 text-indigo-700 bg-indigo-50 hover:bg-indigo-100/80 rounded-xl border border-indigo-200/80 transition-all active:scale-95 cursor-pointer"
                           title="Record Call"
                         >
-                          <Phone className="w-4 h-4" />
+                          <Phone className="w-3.5 h-3.5" />
                         </button>
                       )}
 
                       <Link
                         href={`/leads/${lead.id}`}
-                        className="p-2 text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg border border-slate-200 transition-colors"
+                        className="p-2 text-slate-700 bg-slate-100 hover:bg-slate-200/80 rounded-xl border border-slate-200/80 transition-all active:scale-95"
                         title="View Details"
                       >
-                        <Eye className="w-4 h-4" />
+                        <Eye className="w-3.5 h-3.5" />
                       </Link>
 
                       {onEdit && (
                         <button
                           onClick={() => onEdit(lead)}
-                          className="p-2 text-indigo-700 bg-indigo-50 hover:bg-indigo-100 rounded-lg border border-indigo-200 transition-colors"
+                          className="p-2 text-teal-700 bg-teal-50 hover:bg-teal-100/80 rounded-xl border border-teal-200/80 transition-all active:scale-95 cursor-pointer"
                           title="Edit Lead"
                         >
-                          <Pencil className="w-4 h-4" />
+                          <Pencil className="w-3.5 h-3.5" />
                         </button>
                       )}
 
                       {onDelete && (
                         <button
                           onClick={() => onDelete(lead)}
-                          className="p-2 text-rose-700 bg-rose-50 hover:bg-rose-100 rounded-lg border border-rose-200 transition-colors"
+                          className="p-2 text-rose-700 bg-rose-50 hover:bg-rose-100/80 rounded-xl border border-rose-200/80 transition-all active:scale-95 cursor-pointer"
                           title="Delete Lead"
                         >
-                          <Trash2 className="w-4 h-4" />
+                          <Trash2 className="w-3.5 h-3.5" />
                         </button>
                       )}
                     </div>
