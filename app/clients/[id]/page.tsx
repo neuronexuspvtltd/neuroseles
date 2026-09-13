@@ -294,7 +294,7 @@ export default function ClientProfilePage({
     <AppLayout title={`${client.name} - Client Profile`}>
       <div className="space-y-6 pb-12">
         {/* Profile Header Banner */}
-        <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-2xs space-y-6">
+        <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-6">
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
             <div className="space-y-2">
               <div className="flex items-center gap-3 flex-wrap">
@@ -358,7 +358,7 @@ export default function ClientProfilePage({
 
               <button
                 onClick={() => setIsAddProjectOpen(true)}
-                className="inline-flex items-center gap-1.5 px-3 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs rounded-lg shadow-2xs transition-colors"
+                className="inline-flex items-center gap-1.5 px-3 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs rounded-lg shadow-sm transition-colors"
               >
                 <Plus className="w-4 h-4" /> Add Project
               </button>
@@ -396,7 +396,7 @@ export default function ClientProfilePage({
         </div>
 
         {/* Tab Navigation */}
-        <div className="border-b border-slate-200 bg-white rounded-xl shadow-2xs px-3 overflow-x-auto">
+        <div className="border-b border-slate-200 bg-white rounded-xl shadow-sm px-3 overflow-x-auto">
           <nav className="flex space-x-1 min-w-max">
             {tabs.map((t) => {
               const Icon = t.icon;
@@ -434,7 +434,7 @@ export default function ClientProfilePage({
             {/* Left 2 columns: Information & Active Projects */}
             <div className="lg:col-span-2 space-y-6">
               {/* Information Card */}
-              <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-2xs space-y-4">
+              <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4">
                 <div className="flex items-center justify-between border-b border-slate-100 pb-3">
                   <h3 className="font-bold text-slate-900 text-sm flex items-center gap-2">
                     <Users className="w-4 h-4 text-indigo-600" /> Client Details
@@ -485,7 +485,7 @@ export default function ClientProfilePage({
               </div>
 
               {/* Active Projects List */}
-              <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-2xs space-y-4">
+              <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4">
                 <div className="flex items-center justify-between border-b border-slate-100 pb-3">
                   <h3 className="font-bold text-slate-900 text-sm flex items-center gap-2">
                     <FolderGit2 className="w-4 h-4 text-indigo-600" /> Projects ({projects.length})
@@ -569,7 +569,7 @@ export default function ClientProfilePage({
             {/* Right 1 column: Follow-ups & Activity overview */}
             <div className="space-y-6">
               {/* Upcoming Follow-ups */}
-              <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-2xs space-y-4">
+              <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4">
                 <div className="flex items-center justify-between border-b border-slate-100 pb-3">
                   <h3 className="font-bold text-slate-900 text-sm flex items-center gap-2">
                     <CalendarClock className="w-4 h-4 text-amber-600" /> Upcoming Follow-ups
@@ -608,7 +608,7 @@ export default function ClientProfilePage({
               </div>
 
               {/* Latest Quotation & Demo */}
-              <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-2xs space-y-4">
+              <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4">
                 <h3 className="font-bold text-slate-900 text-sm flex items-center gap-2 border-b border-slate-100 pb-3">
                   <FileText className="w-4 h-4 text-indigo-600" /> Latest Commercial Snapshots
                 </h3>
@@ -640,7 +640,7 @@ export default function ClientProfilePage({
               </div>
 
               {/* Recent Activity */}
-              <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-2xs space-y-4">
+              <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4">
                 <h3 className="font-bold text-slate-900 text-sm flex items-center gap-2 border-b border-slate-100 pb-3">
                   <History className="w-4 h-4 text-slate-600" /> Recent Activity
                 </h3>
@@ -672,7 +672,7 @@ export default function ClientProfilePage({
               <h2 className="text-lg font-bold text-slate-900">Client Projects ({projects.length})</h2>
               <button
                 onClick={() => setIsAddProjectOpen(true)}
-                className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white font-semibold text-xs rounded-xl shadow-2xs hover:bg-indigo-700 transition-colors"
+                className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white font-semibold text-xs rounded-xl shadow-sm hover:bg-indigo-700 transition-colors"
               >
                 <Plus className="w-4 h-4" /> Add Project
               </button>
@@ -695,7 +695,7 @@ export default function ClientProfilePage({
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {projects.map((proj: any) => (
-                  <div key={proj.id} className="bg-white p-5 rounded-xl border border-slate-200 shadow-2xs space-y-4">
+                  <div key={proj.id} className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4">
                     <div className="flex items-start justify-between">
                       <div>
                         <h3 className="font-bold text-slate-900 text-base">{proj.name}</h3>
@@ -772,7 +772,7 @@ export default function ClientProfilePage({
         {activeTab === 'requirements' && (
           <div className="space-y-6">
             {/* Header Action Bar */}
-            <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div>
                 <h3 className="font-bold text-slate-900 text-base flex items-center gap-2">
                   <FileCode className="w-5 h-5 text-indigo-600" /> Requirements Workspace
@@ -782,7 +782,7 @@ export default function ClientProfilePage({
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => openUploadModal('text', 'Requirements')}
-                  className="px-3.5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs rounded-lg transition-colors inline-flex items-center gap-1.5 shadow-2xs"
+                  className="px-3.5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs rounded-lg transition-colors inline-flex items-center gap-1.5 shadow-sm"
                 >
                   <FileText className="w-4 h-4" /> + Write Text Requirement
                 </button>
@@ -796,7 +796,7 @@ export default function ClientProfilePage({
             </div>
 
             {/* Original Lead Requirements */}
-            <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-2xs space-y-3">
+            <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-3">
               <div className="flex items-center justify-between border-b border-slate-100 pb-3">
                 <h3 className="font-bold text-slate-900 text-sm flex items-center gap-2">
                   <FileCode className="w-4 h-4 text-indigo-600" /> Original Lead Requirements
@@ -810,7 +810,7 @@ export default function ClientProfilePage({
 
             {/* Uploaded & Written Requirement Documents */}
             {files.filter((f: any) => f.category === 'Requirements').length > 0 && (
-              <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-2xs space-y-4">
+              <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4">
                 <div className="flex items-center justify-between border-b border-slate-100 pb-3">
                   <h3 className="font-bold text-slate-900 text-sm flex items-center gap-2">
                     <FileText className="w-4 h-4 text-indigo-600" /> Attached Requirement Files & Text Notes ({files.filter((f: any) => f.category === 'Requirements').length})
@@ -886,7 +886,7 @@ export default function ClientProfilePage({
                 <p className="text-xs text-slate-400 italic">No projects created yet. Add a project to define requirements.</p>
               ) : (
                 projects.map((proj: any) => (
-                  <div key={proj.id} className="bg-white p-5 rounded-xl border border-slate-200 shadow-2xs space-y-4">
+                  <div key={proj.id} className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4">
                     <div className="flex items-center justify-between border-b border-slate-100 pb-3">
                       <div>
                         <h4 className="font-bold text-slate-900 text-sm">{proj.name}</h4>
@@ -954,7 +954,7 @@ export default function ClientProfilePage({
               <div className="flex items-center gap-2 shrink-0">
                 <button
                   onClick={() => openUploadModal('file', fileCategoryFilter === 'ALL' ? 'Requirements' : fileCategoryFilter)}
-                  className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-indigo-600 text-white font-semibold text-xs rounded-xl shadow-2xs hover:bg-indigo-700 transition-colors"
+                  className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-indigo-600 text-white font-semibold text-xs rounded-xl shadow-sm hover:bg-indigo-700 transition-colors"
                 >
                   <Upload className="w-4 h-4" /> Upload File
                 </button>
@@ -995,7 +995,7 @@ export default function ClientProfilePage({
                   const isImage = file.fileType?.includes('image') || ['.png', '.jpg', '.jpeg', '.webp'].some((ext) => file.fileReference?.endsWith(ext));
                   const isText = file.fileType === 'text/plain' || file.fileName?.endsWith('.txt');
                   return (
-                    <div key={file.id} className="bg-white p-4 rounded-xl border border-slate-200 shadow-2xs space-y-3 flex flex-col justify-between group">
+                    <div key={file.id} className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm space-y-3 flex flex-col justify-between group">
                       <div className="space-y-2">
                         {/* Image Thumbnail or File Icon */}
                         <div className="h-32 bg-slate-50 rounded-lg border border-slate-100 overflow-hidden flex items-center justify-center relative">
@@ -1071,7 +1071,7 @@ export default function ClientProfilePage({
                 <p className="text-xs text-slate-500 font-medium">No quotations linked to this client yet.</p>
               </div>
             ) : (
-              <div className="bg-white rounded-xl border border-slate-200 shadow-2xs overflow-hidden">
+              <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
                 <table className="w-full text-left border-collapse">
                   <thead>
                     <tr className="bg-slate-50 border-b border-slate-200 text-[11px] font-bold text-slate-500 uppercase tracking-wider">
@@ -1125,7 +1125,7 @@ export default function ClientProfilePage({
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {demos.map((d: any) => (
-                  <div key={d.id} className="bg-white p-5 rounded-xl border border-slate-200 shadow-2xs space-y-3">
+                  <div key={d.id} className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-3">
                     <div className="flex items-center justify-between border-b border-slate-100 pb-2">
                       <span className="font-bold text-slate-900 text-sm">Demo on {d.demoDate} at {d.demoTime}</span>
                       <span className="text-[10px] font-bold px-2 py-0.5 bg-indigo-50 text-indigo-700 rounded">
@@ -1158,7 +1158,7 @@ export default function ClientProfilePage({
               <h2 className="text-lg font-bold text-slate-900">Client Follow-ups ({followUps.length})</h2>
               <button
                 onClick={() => setIsScheduleFollowUpOpen(true)}
-                className="inline-flex items-center gap-2 px-4 py-2 bg-amber-600 text-white font-semibold text-xs rounded-xl shadow-2xs hover:bg-amber-700 transition-colors"
+                className="inline-flex items-center gap-2 px-4 py-2 bg-amber-600 text-white font-semibold text-xs rounded-xl shadow-sm hover:bg-amber-700 transition-colors"
               >
                 <CalendarClock className="w-4 h-4" /> Schedule Follow-up
               </button>
@@ -1174,7 +1174,7 @@ export default function ClientProfilePage({
                 {followUps.map((f: any) => (
                   <div
                     key={f.id}
-                    className="p-4 bg-white border border-slate-200 rounded-xl shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-3"
+                    className="p-4 bg-white border border-slate-200 rounded-xl shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3"
                   >
                     <div className="space-y-1">
                       <div className="flex items-center gap-2">
@@ -1213,7 +1213,7 @@ export default function ClientProfilePage({
         {activeTab === 'notes' && (
           <div className="space-y-6">
             {/* Note Composer Box */}
-            <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-2xs space-y-3">
+            <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-3">
               <h3 className="font-bold text-slate-900 text-sm flex items-center gap-2">
                 <MessageSquare className="w-4 h-4 text-indigo-600" /> Write a Note
               </h3>
@@ -1244,7 +1244,7 @@ export default function ClientProfilePage({
                 <p className="text-xs text-slate-400 italic">No notes created yet.</p>
               ) : (
                 notes.map((n: any) => (
-                  <div key={n.id} className="bg-white p-4 rounded-xl border border-slate-200 shadow-2xs space-y-2">
+                  <div key={n.id} className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm space-y-2">
                     <div className="flex items-center justify-between text-xs border-b border-slate-100 pb-2">
                       <span className="font-bold text-slate-800">{n.createdBy || 'Sales Representative'}</span>
                       <div className="flex items-center gap-2">
@@ -1269,7 +1269,7 @@ export default function ClientProfilePage({
 
         {/* TAB 9: ACTIVITY LOG */}
         {activeTab === 'activity' && (
-          <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-2xs space-y-4">
+          <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-4">
             <h2 className="text-lg font-bold text-slate-900">Complete Activity History ({activities.length})</h2>
 
             {activities.length === 0 ? (
@@ -1278,7 +1278,7 @@ export default function ClientProfilePage({
               <div className="space-y-4 relative before:absolute before:left-3 before:top-2 before:bottom-2 before:w-0.5 before:bg-slate-200">
                 {activities.map((act: any) => (
                   <div key={act.id} className="pl-8 relative text-xs space-y-1">
-                    <div className="w-3 h-3 rounded-full bg-indigo-600 border-2 border-white absolute left-1.5 top-1 -translate-x-1/2 shadow-xs" />
+                    <div className="w-3 h-3 rounded-full bg-indigo-600 border-2 border-white absolute left-1.5 top-1 -translate-x-1/2 shadow-sm" />
                     <p className="font-bold text-slate-900">{act.description}</p>
                     <span className="text-[11px] text-slate-400 block font-mono">
                       {format(new Date(act.createdAt), 'dd MMMM yyyy, hh:mm:ss a')}

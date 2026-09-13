@@ -25,7 +25,7 @@ export const ConversionFunnelSection: React.FC<ConversionFunnelSectionProps> = (
   ];
 
   return (
-    <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-2xs space-y-6">
+    <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm space-y-6">
       <div className="flex items-center justify-between border-b border-slate-100 pb-3">
         <div>
           <h3 className="text-base font-black text-slate-900 flex items-center gap-2">
@@ -57,7 +57,7 @@ export const ConversionFunnelSection: React.FC<ConversionFunnelSectionProps> = (
               <div className="w-full bg-slate-100 rounded-xl overflow-hidden h-9 p-1 flex items-center">
                 <div
                   style={{ width: `${widthPercent}%` }}
-                  className={`${color.bg} h-full rounded-lg transition-all duration-500 flex items-center justify-between px-3 text-xs font-bold text-white shadow-2xs`}
+                  className={`${color.bg} h-full rounded-lg transition-all duration-500 flex items-center justify-between px-3 text-xs font-bold text-white shadow-sm`}
                 >
                   <span className="truncate">{step.stage} ({step.count})</span>
                   {idx > 0 && (

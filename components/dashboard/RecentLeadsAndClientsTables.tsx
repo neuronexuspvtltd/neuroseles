@@ -38,7 +38,7 @@ export const RecentLeadsAndClientsTables: React.FC<RecentLeadsAndClientsTablesPr
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
       {/* Recent Leads Preview */}
-      <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-2xs space-y-4">
+      <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm space-y-4">
         <div className="flex items-center justify-between border-b border-slate-100 pb-3">
           <div>
             <h3 className="text-base font-black text-slate-900 flex items-center gap-2">
@@ -103,7 +103,7 @@ export const RecentLeadsAndClientsTables: React.FC<RecentLeadsAndClientsTablesPr
       </div>
 
       {/* Recently Converted Clients Preview */}
-      <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-2xs space-y-4">
+      <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm space-y-4">
         <div className="flex items-center justify-between border-b border-slate-100 pb-3">
           <div>
             <h3 className="text-base font-black text-slate-900 flex items-center gap-2">

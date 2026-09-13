@@ -172,7 +172,7 @@ export default function DashboardPage() {
 
         {/* Error Handling State */}
         {error && (
-          <div className="p-4 bg-red-50 border border-red-200 rounded-2xl flex items-center justify-between text-xs text-red-800 font-semibold shadow-2xs">
+          <div className="p-4 bg-red-50 border border-red-200 rounded-2xl flex items-center justify-between text-xs text-red-800 font-semibold shadow-sm">
             <div className="flex items-center gap-2">
               <AlertCircle className="w-5 h-5 text-red-600 shrink-0" />
               <span>{error}</span>

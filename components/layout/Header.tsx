@@ -17,7 +17,7 @@ export const Header: React.FC<HeaderProps> = ({
   onAddLeadClick,
 }) => {
   return (
-    <header className="h-16 bg-white/90 backdrop-blur-md border-b border-slate-200/80 px-4 lg:px-8 flex items-center justify-between sticky top-0 z-30 shadow-2xs">
+    <header className="h-16 bg-white/90 backdrop-blur-md border-b border-slate-200/80 px-4 lg:px-8 flex items-center justify-between sticky top-0 z-30 shadow-sm">
       <div className="flex items-center gap-3">
         <button
           onClick={onOpenMobileMenu}

@@ -141,7 +141,7 @@ export const CallAnalyticsCard: React.FC<CallAnalyticsCardProps> = ({
   };
 
   return (
-    <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-2xs space-y-6">
+    <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm space-y-6">
       {/* Header & Segmented Tab Controls */}
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-slate-100 pb-4">
         <div>
@@ -161,7 +161,7 @@ export const CallAnalyticsCard: React.FC<CallAnalyticsCardProps> = ({
             onClick={() => setSelectedTab('today')}
             className={`px-3 py-1.5 rounded-lg transition-all ${
               selectedTab === 'today'
-                ? 'bg-white text-indigo-600 shadow-2xs font-extrabold'
+                ? 'bg-white text-indigo-600 shadow-sm font-extrabold'
                 : 'text-slate-600 hover:text-slate-900'
             }`}
           >
@@ -172,7 +172,7 @@ export const CallAnalyticsCard: React.FC<CallAnalyticsCardProps> = ({
             onClick={() => setSelectedTab('weekly')}
             className={`px-3 py-1.5 rounded-lg transition-all ${
               selectedTab === 'weekly'
-                ? 'bg-white text-indigo-600 shadow-2xs font-extrabold'
+                ? 'bg-white text-indigo-600 shadow-sm font-extrabold'
                 : 'text-slate-600 hover:text-slate-900'
             }`}
           >
@@ -183,7 +183,7 @@ export const CallAnalyticsCard: React.FC<CallAnalyticsCardProps> = ({
             onClick={() => setSelectedTab('monthly')}
             className={`px-3 py-1.5 rounded-lg transition-all ${
               selectedTab === 'monthly'
-                ? 'bg-white text-indigo-600 shadow-2xs font-extrabold'
+                ? 'bg-white text-indigo-600 shadow-sm font-extrabold'
                 : 'text-slate-600 hover:text-slate-900'
             }`}
           >
@@ -194,7 +194,7 @@ export const CallAnalyticsCard: React.FC<CallAnalyticsCardProps> = ({
             onClick={() => setSelectedTab('inPeriod')}
             className={`px-3 py-1.5 rounded-lg transition-all flex items-center gap-1 ${
               selectedTab === 'inPeriod'
-                ? 'bg-white text-indigo-600 shadow-2xs font-extrabold'
+                ? 'bg-white text-indigo-600 shadow-sm font-extrabold'
                 : 'text-slate-600 hover:text-slate-900'
             }`}
           >
@@ -263,7 +263,7 @@ export const CallAnalyticsCard: React.FC<CallAnalyticsCardProps> = ({
             return (
               <div
                 key={badge.key}
-                className={`p-3.5 rounded-xl border ${badge.color} space-y-2.5 flex flex-col justify-between transition-all hover:shadow-2xs`}
+                className={`p-3.5 rounded-xl border ${badge.color} space-y-2.5 flex flex-col justify-between transition-all hover:shadow-sm`}
               >
                 <div className="flex items-center justify-between gap-1">
                   <span className="text-xs font-bold truncate">{badge.label}</span>
@@ -299,7 +299,7 @@ export const CallAnalyticsCard: React.FC<CallAnalyticsCardProps> = ({
             return (
               <div
                 key={res.key}
-                className={`p-3 rounded-xl border ${res.color} flex items-center justify-between font-semibold shadow-2xs`}
+                className={`p-3 rounded-xl border ${res.color} flex items-center justify-between font-semibold shadow-sm`}
               >
                 <span className="truncate">{res.label}</span>
                 <span className="font-black font-mono text-sm shrink-0 ml-2">{count}</span>

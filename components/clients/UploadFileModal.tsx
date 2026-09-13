@@ -164,7 +164,7 @@ export const UploadFileModal: React.FC<UploadFileModalProps> = ({
             onClick={() => { setActiveTab('file'); setError(null); }}
             className={`flex-1 py-2 px-3 rounded-lg text-xs font-semibold flex items-center justify-center gap-2 transition-all ${
               activeTab === 'file'
-                ? 'bg-white text-indigo-600 shadow-2xs border border-slate-200/80 font-bold'
+                ? 'bg-white text-indigo-600 shadow-sm border border-slate-200/80 font-bold'
                 : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/50'
             }`}
           >
@@ -175,7 +175,7 @@ export const UploadFileModal: React.FC<UploadFileModalProps> = ({
             onClick={() => { setActiveTab('text'); setError(null); }}
             className={`flex-1 py-2 px-3 rounded-lg text-xs font-semibold flex items-center justify-center gap-2 transition-all ${
               activeTab === 'text'
-                ? 'bg-white text-indigo-600 shadow-2xs border border-slate-200/80 font-bold'
+                ? 'bg-white text-indigo-600 shadow-sm border border-slate-200/80 font-bold'
                 : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/50'
             }`}
           >

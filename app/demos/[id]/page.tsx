@@ -240,7 +240,7 @@ export default function DemoDetailPage() {
         </Link>
 
         {/* Demo Header Card */}
-        <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <div className="flex items-center gap-3">
               <h1 className="text-2xl font-extrabold text-slate-900">{demo.lead.name}</h1>
@@ -277,7 +277,7 @@ export default function DemoDetailPage() {
 
                 <button
                   onClick={() => setCompleteModalOpen(true)}
-                  className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-semibold shadow-xs"
+                  className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-semibold shadow-sm"
                 >
                   <CheckCircle2 className="w-4 h-4" />
                   <span>Mark Completed</span>
@@ -375,7 +375,7 @@ export default function DemoDetailPage() {
               </button>
               <button
                 type="submit"
-                className="px-4 py-1.5 bg-amber-600 hover:bg-amber-700 text-white rounded-lg text-xs font-semibold shadow-xs"
+                className="px-4 py-1.5 bg-amber-600 hover:bg-amber-700 text-white rounded-lg text-xs font-semibold shadow-sm"
               >
                 Save New Schedule
               </button>
@@ -388,7 +388,7 @@ export default function DemoDetailPage() {
           {/* Left Column (2 Cols): Client Info, Demo Info, Meeting Credentials, Requirements */}
           <div className="lg:col-span-2 space-y-6">
             {/* Client Information Card */}
-            <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-xs space-y-4">
+            <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-4">
               <div className="flex items-center justify-between border-b border-slate-100 pb-3">
                 <h2 className="text-sm font-bold text-slate-900">Client Information</h2>
                 <Link
@@ -434,7 +434,7 @@ export default function DemoDetailPage() {
             </div>
 
             {/* Demo Information Card */}
-            <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-xs space-y-4">
+            <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-4">
               <h2 className="text-sm font-bold text-slate-900 border-b border-slate-100 pb-3">
                 Demo Schedule Details
               </h2>
@@ -462,7 +462,7 @@ export default function DemoDetailPage() {
             </div>
 
             {/* Meeting Credentials Card */}
-            <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-xs space-y-4">
+            <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-4">
               <h2 className="text-sm font-bold text-slate-900 border-b border-slate-100 pb-3 flex items-center gap-1.5">
                 <LinkIcon className="w-4 h-4 text-indigo-600" />
                 Meeting Information
@@ -509,7 +509,7 @@ export default function DemoDetailPage() {
             </div>
 
             {/* Requirements Card */}
-            <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-xs space-y-3">
+            <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-3">
               <div className="flex items-center justify-between">
                 <h2 className="text-sm font-bold text-slate-900">Client Demo Requirements</h2>
                 {saveSuccess && (
@@ -529,7 +529,7 @@ export default function DemoDetailPage() {
                 <button
                   onClick={handleSaveRequirements}
                   disabled={savingReqs}
-                  className="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-xs font-semibold shadow-xs"
+                  className="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-xs font-semibold shadow-sm"
                 >
                   <Save className="w-3.5 h-3.5" />
                   <span>Save Requirements & Info</span>
@@ -541,7 +541,7 @@ export default function DemoDetailPage() {
           {/* Right Column (1 Col): Demo Notes & Demo History */}
           <div className="space-y-6">
             {/* Demo Notes */}
-            <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-xs space-y-3">
+            <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-3">
               <h2 className="text-sm font-bold text-slate-900 border-b border-slate-100 pb-3">
                 Demo Feedback & Notes
               </h2>
@@ -564,7 +564,7 @@ export default function DemoDetailPage() {
             </div>
 
             {/* Demo History Section (Multiple Demos per Lead!) */}
-            <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-xs space-y-4">
+            <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-4">
               <h2 className="text-sm font-bold text-slate-900 border-b border-slate-100 pb-3 flex items-center gap-1.5">
                 <History className="w-4 h-4 text-purple-600" />
                 Demo History ({demo.lead?.demos?.length || 1})

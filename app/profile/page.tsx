@@ -136,7 +136,7 @@ export default function ProfilePage() {
         )}
 
         {/* User Card Overview */}
-        <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-xs">
+        <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
           {loading ? (
             <div className="animate-pulse space-y-4">
               <div className="h-6 bg-slate-200 rounded w-1/4" />
@@ -145,7 +145,7 @@ export default function ProfilePage() {
           ) : (
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
               <div className="flex items-center gap-4">
-                <div className="w-16 h-16 rounded-full bg-indigo-600 flex items-center justify-center text-white text-xl font-bold shadow-xs">
+                <div className="w-16 h-16 rounded-full bg-indigo-600 flex items-center justify-center text-white text-xl font-bold shadow-sm">
                   {userData?.name ? userData.name.substring(0, 2).toUpperCase() : 'US'}
                 </div>
                 <div>
@@ -202,7 +202,7 @@ export default function ProfilePage() {
         {/* Personal Details & Password Forms Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Form 1: Profile Details */}
-          <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-xs flex flex-col justify-between">
+          <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm flex flex-col justify-between">
             <div>
               <h3 className="text-base font-bold text-slate-900 flex items-center gap-2 border-b border-slate-100 pb-3">
                 <User className="w-5 h-5 text-indigo-600" />
@@ -251,7 +251,7 @@ export default function ProfilePage() {
                   <button
                     type="submit"
                     disabled={savingName}
-                    className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-sm font-semibold shadow-xs disabled:opacity-60 transition-colors cursor-pointer"
+                    className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-sm font-semibold shadow-sm disabled:opacity-60 transition-colors cursor-pointer"
                   >
                     {savingName ? 'Saving...' : 'Update Name'}
                   </button>
@@ -261,7 +261,7 @@ export default function ProfilePage() {
           </div>
 
           {/* Form 2: Change Password */}
-          <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-xs">
+          <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
             <h3 className="text-base font-bold text-slate-900 flex items-center gap-2 border-b border-slate-100 pb-3">
               <Lock className="w-5 h-5 text-indigo-600" />
               <span>Change Password</span>
@@ -314,7 +314,7 @@ export default function ProfilePage() {
                 <button
                   type="submit"
                   disabled={savingPassword}
-                  className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-sm font-semibold shadow-xs disabled:opacity-60 transition-colors cursor-pointer"
+                  className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-sm font-semibold shadow-sm disabled:opacity-60 transition-colors cursor-pointer"
                 >
                   {savingPassword ? 'Changing Password...' : 'Change Password'}
                 </button>

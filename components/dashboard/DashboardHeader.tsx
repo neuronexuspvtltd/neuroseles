@@ -62,7 +62,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
             <select
               value={period}
               onChange={(e) => onPeriodChange(e.target.value)}
-              className="bg-transparent font-bold text-white focus:outline-hidden cursor-pointer"
+              className="bg-transparent font-bold text-white focus:outline-none cursor-pointer"
             >
               <option value="all" className="bg-slate-900 text-white">All Time (Lifetime)</option>
               <option value="today" className="bg-slate-900 text-white">Today</option>

@@ -201,7 +201,7 @@ export const AddLeadModal: React.FC<AddLeadModalProps> = ({
               <Link
                 href={`/leads/${duplicateLead.id}`}
                 onClick={onClose}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-amber-600 hover:bg-amber-700 text-white rounded-lg font-semibold shadow-xs shrink-0"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-amber-600 hover:bg-amber-700 text-white rounded-lg font-semibold shadow-sm shrink-0"
               >
                 <span>View Existing Lead</span>
                 <ExternalLink className="w-3.5 h-3.5" />
@@ -371,7 +371,7 @@ export const AddLeadModal: React.FC<AddLeadModalProps> = ({
             <button
               type="submit"
               disabled={loading || Boolean(duplicateLead)}
-              className="inline-flex items-center gap-2 px-5 py-2 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white rounded-lg text-sm font-semibold shadow-xs"
+              className="inline-flex items-center gap-2 px-5 py-2 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white rounded-lg text-sm font-semibold shadow-sm"
             >
               {loading ? (
                 <>

@@ -66,12 +66,12 @@ export const LeadTimeline: React.FC<LeadTimelineProps> = ({ activities }) => {
         return (
           <div key={item.id} className="relative group">
             {/* Dot/Icon */}
-            <div className="absolute -left-6 top-0.5 w-6 h-6 rounded-full bg-white border border-slate-300 shadow-xs flex items-center justify-center -translate-x-1/2">
+            <div className="absolute -left-6 top-0.5 w-6 h-6 rounded-full bg-white border border-slate-300 shadow-sm flex items-center justify-center -translate-x-1/2">
               {getIcon(item.activityType)}
             </div>
 
             {/* Event Box */}
-            <div className="bg-white p-3.5 rounded-xl border border-slate-200 shadow-xs">
+            <div className="bg-white p-3.5 rounded-xl border border-slate-200 shadow-sm">
               <div className="flex items-center justify-between gap-2 mb-1">
                 <span className="text-xs font-bold text-slate-800">
                   {item.description}

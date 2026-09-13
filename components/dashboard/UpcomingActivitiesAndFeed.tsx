@@ -50,7 +50,7 @@ export const UpcomingActivitiesAndFeed: React.FC<UpcomingActivitiesAndFeedProps>
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
       {/* 1. Upcoming Activities Timeline */}
-      <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-2xs space-y-4 flex flex-col justify-between">
+      <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm space-y-4 flex flex-col justify-between">
         <div>
           <div className="flex items-center justify-between border-b border-slate-100 pb-3">
             <div>
@@ -116,7 +116,7 @@ export const UpcomingActivitiesAndFeed: React.FC<UpcomingActivitiesAndFeedProps>
       </div>
 
       {/* 2. Recent Activity Feed */}
-      <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-2xs space-y-4 flex flex-col justify-between">
+      <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm space-y-4 flex flex-col justify-between">
         <div>
           <div className="flex items-center justify-between border-b border-slate-100 pb-3">
             <div>

@@ -52,7 +52,7 @@ export const KPICardGrid: React.FC<KPICardGridProps> = ({ summary, loading = fal
       {/* Card 1: Total Leads */}
       <Link
         href="/leads"
-        className="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-2xs hover:shadow-xl hover:shadow-teal-500/10 hover:border-teal-500/30 transition-all duration-200 flex flex-col justify-between group space-y-3 relative overflow-hidden before:absolute before:top-0 before:left-0 before:right-0 before:h-1 before:bg-gradient-to-r before:from-teal-500 before:to-indigo-500"
+        className="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-sm hover:shadow-xl hover:shadow-teal-500/10 hover:border-teal-500/30 transition-all duration-200 flex flex-col justify-between group space-y-3 relative overflow-hidden before:absolute before:top-0 before:left-0 before:right-0 before:h-1 before:bg-gradient-to-r before:from-teal-500 before:to-indigo-500"
       >
         <div className="flex items-center justify-between">
           <span className="text-[11px] font-bold text-slate-500 uppercase tracking-widest">Leads Overview</span>
@@ -95,7 +95,7 @@ export const KPICardGrid: React.FC<KPICardGridProps> = ({ summary, loading = fal
       {/* Card 2: Follow-ups */}
       <Link
         href="/follow-ups"
-        className="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-2xs hover:shadow-xl hover:shadow-amber-500/10 hover:border-amber-500/30 transition-all duration-200 flex flex-col justify-between group space-y-3 relative overflow-hidden before:absolute before:top-0 before:left-0 before:right-0 before:h-1 before:bg-gradient-to-r before:from-amber-500 before:to-orange-500"
+        className="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-sm hover:shadow-xl hover:shadow-amber-500/10 hover:border-amber-500/30 transition-all duration-200 flex flex-col justify-between group space-y-3 relative overflow-hidden before:absolute before:top-0 before:left-0 before:right-0 before:h-1 before:bg-gradient-to-r before:from-amber-500 before:to-orange-500"
       >
         <div className="flex items-center justify-between">
           <span className="text-[11px] font-bold text-slate-500 uppercase tracking-widest">Follow-ups</span>
@@ -126,7 +126,7 @@ export const KPICardGrid: React.FC<KPICardGridProps> = ({ summary, loading = fal
       {/* Card 3: Demos */}
       <Link
         href="/demos"
-        className="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-2xs hover:shadow-xl hover:shadow-purple-500/10 hover:border-purple-500/30 transition-all duration-200 flex flex-col justify-between group space-y-3 relative overflow-hidden before:absolute before:top-0 before:left-0 before:right-0 before:h-1 before:bg-gradient-to-r before:from-purple-500 before:to-pink-500"
+        className="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-sm hover:shadow-xl hover:shadow-purple-500/10 hover:border-purple-500/30 transition-all duration-200 flex flex-col justify-between group space-y-3 relative overflow-hidden before:absolute before:top-0 before:left-0 before:right-0 before:h-1 before:bg-gradient-to-r before:from-purple-500 before:to-pink-500"
       >
         <div className="flex items-center justify-between">
           <span className="text-[11px] font-bold text-slate-500 uppercase tracking-widest">Product Demos</span>
@@ -157,7 +157,7 @@ export const KPICardGrid: React.FC<KPICardGridProps> = ({ summary, loading = fal
       {/* Card 4: Quotations */}
       <Link
         href="/quotations"
-        className="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-2xs hover:shadow-xl hover:shadow-blue-500/10 hover:border-blue-500/30 transition-all duration-200 flex flex-col justify-between group space-y-3 relative overflow-hidden before:absolute before:top-0 before:left-0 before:right-0 before:h-1 before:bg-gradient-to-r before:from-blue-500 before:to-cyan-500"
+        className="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-sm hover:shadow-xl hover:shadow-blue-500/10 hover:border-blue-500/30 transition-all duration-200 flex flex-col justify-between group space-y-3 relative overflow-hidden before:absolute before:top-0 before:left-0 before:right-0 before:h-1 before:bg-gradient-to-r before:from-blue-500 before:to-cyan-500"
       >
         <div className="flex items-center justify-between">
           <span className="text-[11px] font-bold text-slate-500 uppercase tracking-widest">Quotations</span>
@@ -197,7 +197,7 @@ export const KPICardGrid: React.FC<KPICardGridProps> = ({ summary, loading = fal
       {/* Card 5: Clients */}
       <Link
         href="/clients"
-        className="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-2xs hover:shadow-xl hover:shadow-emerald-500/10 hover:border-emerald-500/30 transition-all duration-200 flex flex-col justify-between group space-y-3 relative overflow-hidden before:absolute before:top-0 before:left-0 before:right-0 before:h-1 before:bg-gradient-to-r before:from-emerald-500 before:to-teal-500"
+        className="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-sm hover:shadow-xl hover:shadow-emerald-500/10 hover:border-emerald-500/30 transition-all duration-200 flex flex-col justify-between group space-y-3 relative overflow-hidden before:absolute before:top-0 before:left-0 before:right-0 before:h-1 before:bg-gradient-to-r before:from-emerald-500 before:to-teal-500"
       >
         <div className="flex items-center justify-between">
           <span className="text-[11px] font-bold text-slate-500 uppercase tracking-widest">Clients</span>

@@ -177,7 +177,7 @@ export default function ClientsPage() {
         </div>
 
         {/* Filter & Search Bar */}
-        <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-2xs space-y-4">
+        <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm space-y-4">
           {/* Status Tabs */}
           <div className="flex items-center gap-2 border-b border-slate-100 pb-3 overflow-x-auto">
             {statusTabs.map((tab) => (
@@ -189,7 +189,7 @@ export default function ClientsPage() {
                 }}
                 className={`px-3.5 py-1.5 text-xs font-semibold rounded-lg transition-all whitespace-nowrap ${
                   statusFilter === tab.value
-                    ? 'bg-indigo-600 text-white shadow-2xs'
+                    ? 'bg-indigo-600 text-white shadow-sm'
                     : 'text-slate-600 hover:bg-slate-100'
                 }`}
               >
@@ -210,7 +210,7 @@ export default function ClientsPage() {
                   setSearch(e.target.value);
                   setPage(1);
                 }}
-                className="w-full pl-9 pr-4 py-2 text-sm border border-slate-200 rounded-lg focus:outline-hidden focus:ring-2 focus:ring-indigo-500"
+                className="w-full pl-9 pr-4 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
               />
             </div>
 
@@ -221,7 +221,7 @@ export default function ClientsPage() {
                   setProjectStatusFilter(e.target.value);
                   setPage(1);
                 }}
-                className="px-3 py-2 text-xs font-medium border border-slate-200 rounded-lg bg-slate-50 focus:outline-hidden focus:ring-2 focus:ring-indigo-500"
+                className="px-3 py-2 text-xs font-medium border border-slate-200 rounded-lg bg-slate-50 focus:outline-none focus:ring-2 focus:ring-indigo-500"
               >
                 <option value="ALL">All Project Statuses</option>
                 <option value="IN_PROGRESS">In Progress</option>
@@ -271,7 +271,7 @@ export default function ClientsPage() {
         ) : (
           <>
             {/* Desktop Table View */}
-            <div className="hidden lg:block bg-white rounded-xl border border-slate-200 shadow-2xs overflow-hidden">
+            <div className="hidden lg:block bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
               <table className="w-full text-left border-collapse">
                 <thead>
                   <tr className="bg-slate-50/80 border-b border-slate-200 text-[11px] font-bold text-slate-500 uppercase tracking-wider">
@@ -388,7 +388,7 @@ export default function ClientsPage() {
               {clients.map((client) => {
                 const latestProject = client.projects[0];
                 return (
-                  <div key={client.id} className="bg-white p-4 rounded-xl border border-slate-200 shadow-2xs space-y-3">
+                  <div key={client.id} className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm space-y-3">
                     <div className="flex items-start justify-between">
                       <div>
                         <Link href={`/clients/${client.id}`} className="font-bold text-slate-900 text-base hover:text-indigo-600">

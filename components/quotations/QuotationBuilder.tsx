@@ -350,7 +350,7 @@ export const QuotationBuilder: React.FC<QuotationBuilderProps> = ({
   return (
     <div className="space-y-6 pb-20">
       {/* Top Header Actions */}
-      <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-lg font-bold text-slate-900">
             {isEditMode ? `Edit Quotation ${existingQuotation?.quotationNumber}` : 'Create New Quotation'}
@@ -372,7 +372,7 @@ export const QuotationBuilder: React.FC<QuotationBuilderProps> = ({
             type="button"
             onClick={() => handleSave('DRAFT')}
             disabled={submitting}
-            className="inline-flex items-center gap-1.5 px-4 py-2 bg-slate-800 hover:bg-slate-900 text-white rounded-lg text-xs font-semibold shadow-xs transition-colors disabled:opacity-50"
+            className="inline-flex items-center gap-1.5 px-4 py-2 bg-slate-800 hover:bg-slate-900 text-white rounded-lg text-xs font-semibold shadow-sm transition-colors disabled:opacity-50"
           >
             <Save className="w-4 h-4" />
             <span>Save as Draft</span>
@@ -382,7 +382,7 @@ export const QuotationBuilder: React.FC<QuotationBuilderProps> = ({
             type="button"
             onClick={() => handleSave('SENT')}
             disabled={submitting}
-            className="inline-flex items-center gap-1.5 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-semibold shadow-xs transition-colors disabled:opacity-50"
+            className="inline-flex items-center gap-1.5 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-semibold shadow-sm transition-colors disabled:opacity-50"
           >
             <CheckCircle2 className="w-4 h-4" />
             <span>Save & Mark Sent</span>
@@ -407,7 +407,7 @@ export const QuotationBuilder: React.FC<QuotationBuilderProps> = ({
         {/* Left Column (2 Cols): Lead Select, Project Details, Items, Terms */}
         <div className="lg:col-span-2 space-y-6">
           {/* Section 1: Customer Selection */}
-          <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-xs space-y-4">
+          <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-4">
             <h2 className="text-sm font-bold text-slate-900 border-b border-slate-100 pb-3 flex items-center gap-2">
               <User className="w-4 h-4 text-indigo-600" />
               1. Customer / Lead Information
@@ -443,7 +443,7 @@ export const QuotationBuilder: React.FC<QuotationBuilderProps> = ({
           </div>
 
           {/* Section 2: Project & Quotation Details */}
-          <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-xs space-y-4">
+          <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-4">
             <h2 className="text-sm font-bold text-slate-900 border-b border-slate-100 pb-3 flex items-center gap-2">
               <FileText className="w-4 h-4 text-indigo-600" />
               2. Quotation Details & Validity
@@ -513,7 +513,7 @@ export const QuotationBuilder: React.FC<QuotationBuilderProps> = ({
           </div>
 
           {/* Section 3: Quotation Items & Services */}
-          <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-xs space-y-4">
+          <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-4">
             <div className="flex items-center justify-between border-b border-slate-100 pb-3">
               <h2 className="text-sm font-bold text-slate-900 flex items-center gap-2">
                 <DollarSign className="w-4 h-4 text-indigo-600" />
@@ -632,7 +632,7 @@ export const QuotationBuilder: React.FC<QuotationBuilderProps> = ({
           </div>
 
           {/* Section 4: Overall Discount & Terms */}
-          <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-xs space-y-4">
+          <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-4">
             <h2 className="text-sm font-bold text-slate-900 border-b border-slate-100 pb-3">
               4. Overall Discount & Payment Terms
             </h2>
@@ -723,7 +723,7 @@ export const QuotationBuilder: React.FC<QuotationBuilderProps> = ({
 
         {/* Right Column (1 Col): Sticky Financial Summary Card */}
         <div className="space-y-6">
-          <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-xs space-y-4 lg:sticky lg:top-24">
+          <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-4 lg:sticky lg:top-24">
             <h2 className="text-sm font-bold text-slate-900 border-b border-slate-100 pb-3 flex items-center justify-between">
               <span>Financial Summary</span>
               <span className="text-xs font-mono text-indigo-600 font-bold">{currency}</span>
@@ -776,7 +776,7 @@ export const QuotationBuilder: React.FC<QuotationBuilderProps> = ({
                 type="button"
                 onClick={() => handleSave('SENT')}
                 disabled={submitting}
-                className="w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-bold shadow-xs transition-colors flex items-center justify-center gap-1.5"
+                className="w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-bold shadow-sm transition-colors flex items-center justify-center gap-1.5"
               >
                 <CheckCircle2 className="w-4 h-4" />
                 <span>Save & Mark Sent</span>

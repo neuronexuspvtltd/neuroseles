@@ -34,7 +34,7 @@ export const PlaceholderPage: React.FC<PlaceholderPageProps> = ({
           <p className="text-sm text-slate-500 max-w-md mx-auto">{description}</p>
         </div>
 
-        <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-xs text-left space-y-3">
+        <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm text-left space-y-3">
           <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider">
             Architecture Ready For:
           </h3>
@@ -50,7 +50,7 @@ export const PlaceholderPage: React.FC<PlaceholderPageProps> = ({
 
         <Link
           href="/leads"
-          className="inline-flex items-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs rounded-lg shadow-xs transition-colors"
+          className="inline-flex items-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs rounded-lg shadow-sm transition-colors"
         >
           Return to Leads Management
         </Link>

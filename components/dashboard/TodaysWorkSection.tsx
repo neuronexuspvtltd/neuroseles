@@ -37,7 +37,7 @@ export const TodaysWorkSection: React.FC<TodaysWorkSectionProps> = ({
   const hasWorkToday = todayFollowUps.length > 0 || todayDemos.length > 0;
 
   return (
-    <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-2xs space-y-6">
+    <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-4">
         <div>
           <h2 className="text-lg font-black text-slate-900 flex items-center gap-2">
@@ -118,7 +118,7 @@ export const TodaysWorkSection: React.FC<TodaysWorkSectionProps> = ({
                 {todayDemos.map((demo) => (
                   <div
                     key={demo.id}
-                    className="p-4 bg-purple-50/40 border border-purple-200 rounded-xl space-y-3 text-xs shadow-2xs hover:border-purple-300 transition-all"
+                    className="p-4 bg-purple-50/40 border border-purple-200 rounded-xl space-y-3 text-xs shadow-sm hover:border-purple-300 transition-all"
                   >
                     <div className="flex items-center justify-between">
                       <div>
@@ -132,7 +132,7 @@ export const TodaysWorkSection: React.FC<TodaysWorkSectionProps> = ({
                           {formatPhoneNumber(demo.lead?.mobile || '')}
                         </span>
                       </div>
-                      <span className="font-bold text-purple-800 bg-white px-2.5 py-1 rounded-lg border border-purple-200 shadow-2xs text-xs">
+                      <span className="font-bold text-purple-800 bg-white px-2.5 py-1 rounded-lg border border-purple-200 shadow-sm text-xs">
                         {demo.demoTime}
                       </span>
                     </div>

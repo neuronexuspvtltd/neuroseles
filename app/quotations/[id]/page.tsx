@@ -202,7 +202,7 @@ export default function QuotationDetailPage() {
         </Link>
 
         {/* Quotation Header Action Card */}
-        <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <div className="flex items-center gap-3">
               <h1 className="text-2xl font-black font-mono text-indigo-900">{quotation.quotationNumber}</h1>
@@ -251,7 +251,7 @@ export default function QuotationDetailPage() {
               <>
                 <Link
                   href={`/quotations/${quotation.id}/edit`}
-                  className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-semibold shadow-xs"
+                  className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-semibold shadow-sm"
                 >
                   <Pencil className="w-4 h-4" />
                   <span>Edit Draft</span>
@@ -270,7 +270,7 @@ export default function QuotationDetailPage() {
             {quotation.status !== 'ACCEPTED' && (
               <button
                 onClick={handleAcceptQuotation}
-                className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-semibold shadow-xs"
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-semibold shadow-sm"
               >
                 <CheckCircle2 className="w-4 h-4" />
                 <span>Mark Accepted</span>
@@ -398,7 +398,7 @@ export default function QuotationDetailPage() {
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-1.5 bg-rose-600 text-white font-semibold rounded-lg shadow-xs"
+                  className="px-4 py-1.5 bg-rose-600 text-white font-semibold rounded-lg shadow-sm"
                 >
                   Confirm Rejection
                 </button>

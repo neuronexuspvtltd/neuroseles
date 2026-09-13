@@ -220,7 +220,7 @@ export const HeaderNotificationBell: React.FC = () => {
                     {visibleOverdue.slice(0, 5).map((item) => (
                       <div
                         key={item.id}
-                        className="p-2.5 bg-white rounded-lg border border-rose-200 text-xs shadow-2xs group relative"
+                        className="p-2.5 bg-white rounded-lg border border-rose-200 text-xs shadow-sm group relative"
                       >
                         <div className="flex justify-between items-start font-bold text-slate-900 pr-5">
                           <Link href={`/leads/${item.lead.id}`} onClick={() => setOpen(false)}>
@@ -253,7 +253,7 @@ export const HeaderNotificationBell: React.FC = () => {
                     {visibleTodayFollowUps.slice(0, 5).map((item) => (
                       <div
                         key={item.id}
-                        className="p-2.5 bg-white rounded-lg border border-amber-200 text-xs shadow-2xs group relative"
+                        className="p-2.5 bg-white rounded-lg border border-amber-200 text-xs shadow-sm group relative"
                       >
                         <div className="flex justify-between items-start font-bold text-slate-900 pr-5">
                           <Link href={`/leads/${item.lead.id}`} onClick={() => setOpen(false)}>

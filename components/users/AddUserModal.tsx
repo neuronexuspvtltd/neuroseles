@@ -184,7 +184,7 @@ export const AddUserModal: React.FC<AddUserModalProps> = ({
             <button
               type="submit"
               disabled={loading}
-              className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-sm font-semibold shadow-xs disabled:opacity-60 transition-colors cursor-pointer"
+              className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-sm font-semibold shadow-sm disabled:opacity-60 transition-colors cursor-pointer"
             >
               {loading ? 'Creating User...' : 'Create User'}
             </button>

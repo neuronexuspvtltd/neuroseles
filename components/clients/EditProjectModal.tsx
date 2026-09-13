@@ -260,7 +260,7 @@ export const EditProjectModal: React.FC<EditProjectModalProps> = ({
             <button
               type="submit"
               disabled={loading}
-              className="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white text-xs font-semibold rounded-lg shadow-xs transition-colors inline-flex items-center gap-2"
+              className="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white text-xs font-semibold rounded-lg shadow-sm transition-colors inline-flex items-center gap-2"
             >
               {loading ? 'Saving...' : 'Save Changes'}
             </button>

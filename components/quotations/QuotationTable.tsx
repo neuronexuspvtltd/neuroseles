@@ -88,19 +88,19 @@ export const QuotationTable: React.FC<QuotationTableProps> = ({
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'DRAFT':
-        return <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-slate-100 text-slate-700 border border-slate-200/80 shadow-2xs">Draft</span>;
+        return <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-slate-100 text-slate-700 border border-slate-200/80 shadow-sm">Draft</span>;
       case 'SENT':
-        return <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-indigo-50 text-indigo-700 border border-indigo-200/80 shadow-2xs">Sent</span>;
+        return <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-indigo-50 text-indigo-700 border border-indigo-200/80 shadow-sm">Sent</span>;
       case 'VIEWED':
-        return <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-purple-50 text-purple-700 border border-purple-200/80 shadow-2xs">Viewed</span>;
+        return <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-purple-50 text-purple-700 border border-purple-200/80 shadow-sm">Viewed</span>;
       case 'ACCEPTED':
-        return <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200/80 shadow-2xs">Accepted</span>;
+        return <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200/80 shadow-sm">Accepted</span>;
       case 'REJECTED':
-        return <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-rose-50 text-rose-700 border border-rose-200/80 shadow-2xs">Rejected</span>;
+        return <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-rose-50 text-rose-700 border border-rose-200/80 shadow-sm">Rejected</span>;
       case 'EXPIRED':
-        return <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-amber-50 text-amber-700 border border-amber-200/80 shadow-2xs">Expired</span>;
+        return <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-amber-50 text-amber-700 border border-amber-200/80 shadow-sm">Expired</span>;
       case 'REVISED':
-        return <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-cyan-50 text-cyan-700 border border-cyan-200/80 shadow-2xs">Revised</span>;
+        return <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-cyan-50 text-cyan-700 border border-cyan-200/80 shadow-sm">Revised</span>;
       default:
         return <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-slate-100 text-slate-700">{status}</span>;
     }
@@ -109,7 +109,7 @@ export const QuotationTable: React.FC<QuotationTableProps> = ({
   return (
     <div className="space-y-4">
       {/* Desktop Table */}
-      <div className="hidden md:block bg-white rounded-2xl border border-slate-200/80 shadow-xs overflow-hidden">
+      <div className="hidden md:block bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
         <table className="w-full text-left border-collapse">
           <thead>
             <tr className="bg-slate-50/90 border-b border-slate-200/80 text-[10px] font-black uppercase tracking-widest text-slate-400">
@@ -143,7 +143,7 @@ export const QuotationTable: React.FC<QuotationTableProps> = ({
                   </td>
                   <td className="py-3.5 px-5 font-bold text-slate-900">
                     <Link href={`/leads/${q.lead.id}`} className="hover:text-teal-600 transition-colors flex items-center gap-2.5">
-                      <div className="w-7 h-7 rounded-full bg-gradient-to-tr from-cyan-600 to-indigo-600 text-white font-bold text-[10px] flex items-center justify-center shrink-0 shadow-2xs">
+                      <div className="w-7 h-7 rounded-full bg-gradient-to-tr from-cyan-600 to-indigo-600 text-white font-bold text-[10px] flex items-center justify-center shrink-0 shadow-sm">
                         {initials}
                       </div>
                       <span className="truncate max-w-[140px]">{q.lead.name}</span>
@@ -245,7 +245,7 @@ export const QuotationTable: React.FC<QuotationTableProps> = ({
         {quotations.map((q) => (
           <div
             key={q.id}
-            className="bg-white rounded-xl border border-slate-200 p-4 shadow-xs space-y-3"
+            className="bg-white rounded-xl border border-slate-200 p-4 shadow-sm space-y-3"
           >
             <div className="flex items-start justify-between">
               <div>

@@ -72,7 +72,7 @@ export const AnalyticsChartsSection: React.FC<AnalyticsChartsSectionProps> = ({
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
       {/* 1. Lead Generation Trend Chart */}
-      <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-2xs space-y-4 flex flex-col justify-between">
+      <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm space-y-4 flex flex-col justify-between">
         <div>
           <div className="flex items-center justify-between border-b border-slate-100 pb-3">
             <div>
@@ -101,7 +101,7 @@ export const AnalyticsChartsSection: React.FC<AnalyticsChartsSectionProps> = ({
 
                       <div
                         style={{ height: `${heightPercent}%` }}
-                        className="w-full max-w-[28px] bg-indigo-600 group-hover:bg-indigo-700 rounded-t-md transition-all shadow-2xs"
+                        className="w-full max-w-[28px] bg-indigo-600 group-hover:bg-indigo-700 rounded-t-md transition-all shadow-sm"
                       />
                     </div>
                   );
@@ -121,7 +121,7 @@ export const AnalyticsChartsSection: React.FC<AnalyticsChartsSectionProps> = ({
       </div>
 
       {/* 2. Lead Sources Breakdown */}
-      <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-2xs space-y-4 flex flex-col justify-between">
+      <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm space-y-4 flex flex-col justify-between">
         <div>
           <div className="flex items-center justify-between border-b border-slate-100 pb-3">
             <div>
@@ -164,7 +164,7 @@ export const AnalyticsChartsSection: React.FC<AnalyticsChartsSectionProps> = ({
       </div>
 
       {/* 3. Quotation Analytics Card */}
-      <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-2xs space-y-4">
+      <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm space-y-4">
         <div className="flex items-center justify-between border-b border-slate-100 pb-3">
           <div>
             <h3 className="text-base font-black text-slate-900 flex items-center gap-2">
@@ -232,7 +232,7 @@ export const AnalyticsChartsSection: React.FC<AnalyticsChartsSectionProps> = ({
       </div>
 
       {/* 4. Client Conversion Analytics Card */}
-      <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-2xs space-y-4">
+      <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm space-y-4">
         <div className="flex items-center justify-between border-b border-slate-100 pb-3">
           <div>
             <h3 className="text-base font-black text-slate-900 flex items-center gap-2">

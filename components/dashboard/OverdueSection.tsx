@@ -21,10 +21,10 @@ export const OverdueSection: React.FC<OverdueSectionProps> = ({
   if (overdueFollowUps.length === 0) return null;
 
   return (
-    <div className="bg-rose-50/70 border-2 border-rose-200 rounded-2xl p-5 shadow-2xs space-y-4">
+    <div className="bg-rose-50/70 border-2 border-rose-200 rounded-2xl p-5 shadow-sm space-y-4">
       <div className="flex items-center justify-between border-b border-rose-200/80 pb-3">
         <div className="flex items-center gap-2.5">
-          <div className="p-2 bg-rose-600 text-white rounded-xl shadow-2xs">
+          <div className="p-2 bg-rose-600 text-white rounded-xl shadow-sm">
             <AlertCircle className="w-5 h-5 animate-pulse" />
           </div>
           <div>
@@ -45,7 +45,7 @@ export const OverdueSection: React.FC<OverdueSectionProps> = ({
         {overdueFollowUps.map((item) => (
           <div
             key={item.id}
-            className="bg-white p-4 rounded-xl border border-rose-200 shadow-2xs space-y-3 flex flex-col justify-between"
+            className="bg-white p-4 rounded-xl border border-rose-200 shadow-sm space-y-3 flex flex-col justify-between"
           >
             <div className="space-y-1.5">
               <div className="flex items-center justify-between">

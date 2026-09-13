@@ -103,7 +103,7 @@ export default function FollowUpsPage() {
             </div>
             <button
               onClick={() => setActiveTab('overdue')}
-              className="px-3 py-1.5 bg-rose-600 hover:bg-rose-700 text-white font-semibold text-xs rounded-lg shadow-xs shrink-0"
+              className="px-3 py-1.5 bg-rose-600 hover:bg-rose-700 text-white font-semibold text-xs rounded-lg shadow-sm shrink-0"
             >
               View Overdue
             </button>
@@ -111,12 +111,12 @@ export default function FollowUpsPage() {
         )}
 
         {/* Navigation Tabs */}
-        <div className="bg-white rounded-xl border border-slate-200 p-2 shadow-xs flex items-center gap-2">
+        <div className="bg-white rounded-xl border border-slate-200 p-2 shadow-sm flex items-center gap-2">
           <button
             onClick={() => setActiveTab('today')}
             className={`flex-1 py-2.5 px-4 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-2 ${
               activeTab === 'today'
-                ? 'bg-indigo-600 text-white shadow-xs'
+                ? 'bg-indigo-600 text-white shadow-sm'
                 : 'text-slate-600 hover:bg-slate-50'
             }`}
           >
@@ -128,7 +128,7 @@ export default function FollowUpsPage() {
             onClick={() => setActiveTab('upcoming')}
             className={`flex-1 py-2.5 px-4 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-2 ${
               activeTab === 'upcoming'
-                ? 'bg-indigo-600 text-white shadow-xs'
+                ? 'bg-indigo-600 text-white shadow-sm'
                 : 'text-slate-600 hover:bg-slate-50'
             }`}
           >
@@ -140,7 +140,7 @@ export default function FollowUpsPage() {
             onClick={() => setActiveTab('overdue')}
             className={`flex-1 py-2.5 px-4 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-2 ${
               activeTab === 'overdue'
-                ? 'bg-rose-600 text-white shadow-xs'
+                ? 'bg-rose-600 text-white shadow-sm'
                 : 'text-slate-600 hover:bg-slate-50'
             }`}
           >

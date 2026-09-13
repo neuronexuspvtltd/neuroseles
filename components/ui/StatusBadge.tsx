@@ -20,7 +20,7 @@ export const StatusBadge: React.FC<StatusBadgeProps> = ({ status, className = ''
 
   return (
     <span
-      className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold border shadow-2xs transition-all ${meta.badgeBg} ${meta.badgeText} ${meta.badgeBorder} ${className}`}
+      className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold border shadow-sm transition-all ${meta.badgeBg} ${meta.badgeText} ${meta.badgeBorder} ${className}`}
     >
       <span className="relative flex h-2 w-2 items-center justify-center">
         {isAnimated && (

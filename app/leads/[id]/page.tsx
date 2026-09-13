@@ -198,7 +198,7 @@ export default function LeadDetailPage() {
         </Link>
 
         {/* Lead Header Card */}
-        <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <div className="flex items-center gap-3">
               <h1 className="text-2xl font-extrabold text-slate-900">{lead.name}</h1>
@@ -220,12 +220,12 @@ export default function LeadDetailPage() {
               href={getLeadWhatsAppLink(lead)}
               title="Send WhatsApp Message"
               showText={true}
-              className="px-3.5 py-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-300 rounded-lg text-xs font-semibold shadow-xs transition-colors"
+              className="px-3.5 py-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-300 rounded-lg text-xs font-semibold shadow-sm transition-colors"
             />
 
             <button
               onClick={() => setCallModalOpen(true)}
-              className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-semibold shadow-xs"
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-semibold shadow-sm"
             >
               <PhoneCall className="w-4 h-4" />
               <span>Mark as Called</span>
@@ -233,7 +233,7 @@ export default function LeadDetailPage() {
 
             <button
               onClick={() => setFollowUpModalOpen(true)}
-              className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-lg text-xs font-semibold shadow-xs"
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-lg text-xs font-semibold shadow-sm"
             >
               <CalendarClock className="w-4 h-4" />
               <span>Schedule Follow-up</span>
@@ -262,7 +262,7 @@ export default function LeadDetailPage() {
               <button
                 onClick={handleConvertClient}
                 disabled={converting}
-                className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-semibold shadow-xs"
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-semibold shadow-sm"
               >
                 <Trophy className="w-4 h-4" />
                 <span>Convert to Client</span>
@@ -292,7 +292,7 @@ export default function LeadDetailPage() {
           {/* Left Column (2 Cols): Basic Info, Requirements, Notes */}
           <div className="lg:col-span-2 space-y-6">
             {/* Basic Information */}
-            <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-xs">
+            <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
               <h2 className="text-sm font-bold text-slate-900 border-b border-slate-100 pb-3 mb-4">
                 Basic Information
               </h2>
@@ -354,7 +354,7 @@ export default function LeadDetailPage() {
             </div>
 
             {/* Initial Requirements */}
-            <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-xs space-y-3">
+            <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-3">
               <div className="flex items-center justify-between">
                 <h2 className="text-sm font-bold text-slate-900">Initial Requirements</h2>
                 {saveSuccess && (
@@ -374,7 +374,7 @@ export default function LeadDetailPage() {
                 <button
                   onClick={handleSaveRequirements}
                   disabled={savingRequirements}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-semibold shadow-xs"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-semibold shadow-sm"
                 >
                   <Save className="w-3.5 h-3.5" />
                   <span>Save Requirements</span>
@@ -383,7 +383,7 @@ export default function LeadDetailPage() {
             </div>
 
             {/* Call History Section */}
-            <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-xs space-y-4">
+            <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-4">
               <div className="flex items-center justify-between border-b border-slate-100 pb-3">
                 <h2 className="text-sm font-bold text-slate-900 flex items-center gap-2">
                   <Phone className="w-4 h-4 text-indigo-600" />
@@ -437,7 +437,7 @@ export default function LeadDetailPage() {
           {/* Right Column: Scheduled Follow-ups & Activity Timeline */}
           <div className="space-y-6">
             {/* Follow-ups List */}
-            <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-xs space-y-4">
+            <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-4">
               <div className="flex items-center justify-between border-b border-slate-100 pb-3">
                 <h2 className="text-sm font-bold text-slate-900 flex items-center gap-2">
                   <Clock className="w-4 h-4 text-amber-600" />
@@ -476,7 +476,7 @@ export default function LeadDetailPage() {
             </div>
 
             {/* Activity Timeline */}
-            <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-xs space-y-4">
+            <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-4">
               <h2 className="text-sm font-bold text-slate-900 border-b border-slate-100 pb-3">
                 Activity Timeline
               </h2>

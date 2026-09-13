@@ -42,7 +42,7 @@ export const FollowUpCard: React.FC<FollowUpCardProps> = ({
 
   return (
     <div
-      className={`bg-white rounded-2xl border p-4 sm:p-5 shadow-xs transition-all hover:shadow-md ${
+      className={`bg-white rounded-2xl border p-4 sm:p-5 shadow-sm transition-all hover:shadow-md ${
         isOverdue
           ? 'border-rose-300/80 bg-rose-50/20'
           : 'border-slate-200/80'
@@ -50,7 +50,7 @@ export const FollowUpCard: React.FC<FollowUpCardProps> = ({
     >
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100/80">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-amber-500 to-indigo-600 text-white font-bold text-xs flex items-center justify-center shrink-0 shadow-2xs">
+          <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-amber-500 to-indigo-600 text-white font-bold text-xs flex items-center justify-center shrink-0 shadow-sm">
             {initials}
           </div>
           <div>
@@ -75,13 +75,13 @@ export const FollowUpCard: React.FC<FollowUpCardProps> = ({
 
         <div className="flex items-center gap-2">
           {isOverdue && (
-            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-extrabold bg-rose-100 text-rose-800 border border-rose-300/80 shadow-2xs">
+            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-extrabold bg-rose-100 text-rose-800 border border-rose-300/80 shadow-sm">
               <AlertTriangle className="w-3 h-3 text-rose-600" />
               OVERDUE
             </span>
           )}
 
-          <div className="flex items-center gap-1.5 px-3 py-1 bg-amber-50/90 border border-amber-200/80 text-amber-900 rounded-full text-xs font-bold shadow-2xs">
+          <div className="flex items-center gap-1.5 px-3 py-1 bg-amber-50/90 border border-amber-200/80 text-amber-900 rounded-full text-xs font-bold shadow-sm">
             <Clock className="w-3.5 h-3.5 text-amber-600" />
             <span>
               {item.followUpDate} at {item.followUpTime}
@@ -116,7 +116,7 @@ export const FollowUpCard: React.FC<FollowUpCardProps> = ({
 
         <button
           onClick={() => onComplete(item)}
-          className="inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-bold text-white bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 rounded-xl shadow-xs transition-all active:scale-95 cursor-pointer"
+          className="inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-bold text-white bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 rounded-xl shadow-sm transition-all active:scale-95 cursor-pointer"
         >
           <CheckCircle className="w-3.5 h-3.5" />
           <span>Complete</span>

@@ -74,15 +74,15 @@ export const DemoTable: React.FC<DemoTableProps> = ({
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'SCHEDULED':
-        return <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-purple-50 text-purple-700 border border-purple-200/80 shadow-2xs">Scheduled</span>;
+        return <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-purple-50 text-purple-700 border border-purple-200/80 shadow-sm">Scheduled</span>;
       case 'COMPLETED':
-        return <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200/80 shadow-2xs">Completed</span>;
+        return <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200/80 shadow-sm">Completed</span>;
       case 'RESCHEDULED':
-        return <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-amber-50 text-amber-700 border border-amber-200/80 shadow-2xs">Rescheduled</span>;
+        return <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-amber-50 text-amber-700 border border-amber-200/80 shadow-sm">Rescheduled</span>;
       case 'CANCELLED':
-        return <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-rose-50 text-rose-700 border border-rose-200/80 shadow-2xs">Cancelled</span>;
+        return <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-rose-50 text-rose-700 border border-rose-200/80 shadow-sm">Cancelled</span>;
       case 'NO_SHOW':
-        return <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-slate-100 text-slate-700 border border-slate-200 shadow-2xs">No Show</span>;
+        return <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-slate-100 text-slate-700 border border-slate-200 shadow-sm">No Show</span>;
       default:
         return <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-slate-100 text-slate-700">{status}</span>;
     }
@@ -91,7 +91,7 @@ export const DemoTable: React.FC<DemoTableProps> = ({
   return (
     <div className="space-y-4">
       {/* Desktop Table */}
-      <div className="hidden md:block bg-white rounded-2xl border border-slate-200/80 shadow-xs overflow-hidden">
+      <div className="hidden md:block bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
         <table className="w-full text-left border-collapse">
           <thead>
             <tr className="bg-slate-50/90 border-b border-slate-200/80 text-[10px] font-black uppercase tracking-widest text-slate-400">
@@ -118,7 +118,7 @@ export const DemoTable: React.FC<DemoTableProps> = ({
                       href={`/demos/${demo.id}`}
                       className="hover:text-purple-600 transition-colors flex items-center gap-3"
                     >
-                      <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-purple-600 to-indigo-600 text-white font-bold text-xs flex items-center justify-center shrink-0 shadow-2xs group-hover:scale-105 transition-transform">
+                      <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-purple-600 to-indigo-600 text-white font-bold text-xs flex items-center justify-center shrink-0 shadow-sm group-hover:scale-105 transition-transform">
                         {initials}
                       </div>
                       <span className="truncate max-w-[150px]">{demo.lead.name}</span>
@@ -205,7 +205,7 @@ export const DemoTable: React.FC<DemoTableProps> = ({
         {demos.map((demo) => (
           <div
             key={demo.id}
-            className="bg-white rounded-xl border border-slate-200 p-4 shadow-xs space-y-3"
+            className="bg-white rounded-xl border border-slate-200 p-4 shadow-sm space-y-3"
           >
             <div className="flex items-start justify-between">
               <div>

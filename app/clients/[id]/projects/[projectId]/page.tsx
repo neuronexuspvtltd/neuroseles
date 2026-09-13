@@ -157,7 +157,7 @@ export default function ProjectDetailPage({
         </div>
 
         {/* Project Header */}
-        <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-2xs space-y-4">
+        <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm space-y-4">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="space-y-1">
               <div className="flex items-center gap-3 flex-wrap">
@@ -246,14 +246,14 @@ export default function ProjectDetailPage({
           <div className="lg:col-span-2 space-y-6">
             {/* Description */}
             {project.description && (
-              <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-2xs space-y-2">
+              <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-2">
                 <h3 className="font-bold text-slate-900 text-sm">Project Overview</h3>
                 <p className="text-xs text-slate-700">{project.description}</p>
               </div>
             )}
 
             {/* Current Final Requirements */}
-            <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-2xs space-y-3">
+            <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-3">
               <div className="flex items-center justify-between border-b border-slate-100 pb-3">
                 <h3 className="font-bold text-slate-900 text-sm flex items-center gap-2">
                   <FileCode className="w-4 h-4 text-indigo-600" /> Project Requirements
@@ -272,7 +272,7 @@ export default function ProjectDetailPage({
             </div>
 
             {/* Requirement History Log */}
-            <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-2xs space-y-3">
+            <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-3">
               <h3 className="font-bold text-slate-900 text-sm flex items-center gap-2 border-b border-slate-100 pb-3">
                 <History className="w-4 h-4 text-slate-600" /> Requirement History Log ({historyLogs.length})
               </h3>
@@ -300,7 +300,7 @@ export default function ProjectDetailPage({
           {/* Right Column: Files & Activity */}
           <div className="space-y-6">
             {/* Project Files */}
-            <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-2xs space-y-3">
+            <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-3">
               <div className="flex items-center justify-between border-b border-slate-100 pb-3">
                 <h3 className="font-bold text-slate-900 text-sm flex items-center gap-2">
                   <FileText className="w-4 h-4 text-indigo-600" /> Project Files & Requirements ({files.length})
@@ -360,7 +360,7 @@ export default function ProjectDetailPage({
             </div>
 
             {/* Project Notes */}
-            <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-2xs space-y-3">
+            <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-3">
               <div className="flex items-center justify-between border-b border-slate-100 pb-3">
                 <h3 className="font-bold text-slate-900 text-sm flex items-center gap-2">
                   <MessageSquare className="w-4 h-4 text-indigo-600" /> Project Notes ({notes.length})

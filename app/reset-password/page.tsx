@@ -108,7 +108,7 @@ function ResetPasswordForm() {
 
               <Link
                 href="/login"
-                className="w-full flex justify-center items-center gap-2 py-2.5 px-4 border border-transparent rounded-lg shadow-xs text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 transition-colors"
+                className="w-full flex justify-center items-center gap-2 py-2.5 px-4 border border-transparent rounded-lg shadow-sm text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 transition-colors"
               >
                 <span>Proceed to Sign In</span>
                 <ArrowRight className="w-4 h-4" />
@@ -120,7 +120,7 @@ function ResetPasswordForm() {
                 <label htmlFor="newPassword" className="block text-sm font-medium text-slate-700">
                   New Password
                 </label>
-                <div className="mt-1.5 relative rounded-lg shadow-xs">
+                <div className="mt-1.5 relative rounded-lg shadow-sm">
                   <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
                     <Lock className="w-5 h-5" />
                   </div>
@@ -147,7 +147,7 @@ function ResetPasswordForm() {
                 <label htmlFor="confirmPassword" className="block text-sm font-medium text-slate-700">
                   Confirm New Password
                 </label>
-                <div className="mt-1.5 relative rounded-lg shadow-xs">
+                <div className="mt-1.5 relative rounded-lg shadow-sm">
                   <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
                     <Lock className="w-5 h-5" />
                   </div>
@@ -167,7 +167,7 @@ function ResetPasswordForm() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full flex justify-center items-center gap-2 py-2.5 px-4 border border-transparent rounded-lg shadow-xs text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:opacity-60 transition-all cursor-pointer"
+                  className="w-full flex justify-center items-center gap-2 py-2.5 px-4 border border-transparent rounded-lg shadow-sm text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:opacity-60 transition-all cursor-pointer"
                 >
                   {loading ? (
                     <>

@@ -33,7 +33,7 @@ export const LeadPipelineSection: React.FC<LeadPipelineSectionProps> = ({ pipeli
   ];
 
   return (
-    <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-2xs space-y-5">
+    <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm space-y-5">
       <div className="flex items-center justify-between border-b border-slate-100 pb-3">
         <div>
           <h3 className="text-base font-black text-slate-900 flex items-center gap-2">
@@ -56,13 +56,13 @@ export const LeadPipelineSection: React.FC<LeadPipelineSectionProps> = ({ pipeli
             <Link
               key={st.key}
               href={`/leads?status=${st.key}`}
-              className={`p-4 rounded-xl border ${st.border} ${st.bg} transition-all space-y-3 flex flex-col justify-between group shadow-2xs hover:shadow-sm`}
+              className={`p-4 rounded-xl border ${st.border} ${st.bg} transition-all space-y-3 flex flex-col justify-between group shadow-sm hover:shadow-sm`}
             >
               <div className="flex items-center justify-between">
                 <span className={`text-xs font-bold ${st.text}`}>
                   {st.label}
                 </span>
-                <div className={`p-1.5 rounded-lg bg-white/80 shadow-2xs ${st.text}`}>
+                <div className={`p-1.5 rounded-lg bg-white/80 shadow-sm ${st.text}`}>
                   <Icon className="w-3.5 h-3.5" />
                 </div>
               </div>

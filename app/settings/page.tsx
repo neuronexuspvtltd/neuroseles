@@ -151,7 +151,7 @@ export default function SettingsPage() {
     <AppLayout title="Settings">
       <div className="max-w-4xl mx-auto space-y-6 pb-20">
         {/* Personal Settings Banner Card (All Users) */}
-        <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold shrink-0">
               <User className="w-5 h-5" />
@@ -172,7 +172,7 @@ export default function SettingsPage() {
 
         {/* System Settings Card */}
         {!isAdmin ? (
-          <div className="bg-white rounded-2xl border border-slate-200 p-8 text-center space-y-3 shadow-xs">
+          <div className="bg-white rounded-2xl border border-slate-200 p-8 text-center space-y-3 shadow-sm">
             <ShieldAlert className="w-10 h-10 text-amber-500 mx-auto" />
             <h3 className="text-base font-bold text-slate-900">System & Company Settings Restricted</h3>
             <p className="text-xs text-slate-500 max-w-md mx-auto">
@@ -180,7 +180,7 @@ export default function SettingsPage() {
             </p>
           </div>
         ) : (
-          <div className="bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-xs space-y-6">
+          <div className="bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-sm space-y-6">
             {/* Header */}
             <div className="flex items-center justify-between border-b border-slate-100 pb-5">
               <div className="flex items-center gap-3">
@@ -216,7 +216,7 @@ export default function SettingsPage() {
                 </h2>
 
                 <div className="flex flex-col sm:flex-row items-center gap-6">
-                  <div className="w-40 h-24 bg-white border border-slate-300 rounded-xl p-2 flex items-center justify-center shrink-0 shadow-2xs">
+                  <div className="w-40 h-24 bg-white border border-slate-300 rounded-xl p-2 flex items-center justify-center shrink-0 shadow-sm">
                     {logo ? (
                       <img src={logo} alt="Company Logo Preview" className="max-h-20 max-w-full object-contain" />
                     ) : (

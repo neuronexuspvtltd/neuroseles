@@ -108,7 +108,7 @@ export const ViewTextFileModal: React.FC<ViewTextFileModalProps> = ({
           <button
             onClick={handleCopy}
             disabled={!content}
-            className="px-3.5 py-1.5 bg-white border border-slate-200 text-slate-700 hover:bg-slate-100 font-semibold text-xs rounded-lg transition-colors inline-flex items-center gap-1.5 shadow-2xs"
+            className="px-3.5 py-1.5 bg-white border border-slate-200 text-slate-700 hover:bg-slate-100 font-semibold text-xs rounded-lg transition-colors inline-flex items-center gap-1.5 shadow-sm"
           >
             {copied ? <Check className="w-4 h-4 text-emerald-600" /> : <Copy className="w-4 h-4 text-slate-500" />}
             {copied ? 'Copied to Clipboard!' : 'Copy Text'}

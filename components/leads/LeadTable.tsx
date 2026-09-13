@@ -74,7 +74,7 @@ export const LeadTable: React.FC<LeadTableProps> = ({
   return (
     <div className="space-y-4">
       {/* Desktop Table */}
-      <div className="hidden md:block bg-white rounded-2xl border border-slate-200/80 shadow-xs overflow-hidden">
+      <div className="hidden md:block bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
         <table className="w-full text-left border-collapse">
           <thead>
             <tr className="bg-slate-50/90 border-b border-slate-200/80 text-[10px] font-black uppercase tracking-widest text-slate-400">
@@ -104,7 +104,7 @@ export const LeadTable: React.FC<LeadTableProps> = ({
                       href={`/leads/${lead.id}`}
                       className="hover:text-teal-600 transition-colors flex items-center gap-3"
                     >
-                      <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-teal-600 to-indigo-600 text-white font-bold text-xs flex items-center justify-center shrink-0 shadow-2xs group-hover:scale-105 transition-transform">
+                      <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-teal-600 to-indigo-600 text-white font-bold text-xs flex items-center justify-center shrink-0 shadow-sm group-hover:scale-105 transition-transform">
                         {initials}
                       </div>
                       <span className="truncate max-w-[160px]">{lead.name}</span>
@@ -208,7 +208,7 @@ export const LeadTable: React.FC<LeadTableProps> = ({
           return (
             <div
               key={lead.id}
-              className="bg-white rounded-xl border border-slate-200 p-4 shadow-xs space-y-3"
+              className="bg-white rounded-xl border border-slate-200 p-4 shadow-sm space-y-3"
             >
               <div className="flex items-start justify-between">
                 <div>

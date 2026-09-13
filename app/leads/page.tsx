@@ -102,7 +102,7 @@ export default function LeadsPage() {
     >
       <div className="space-y-6 pb-12">
         {/* Controls: Search, Filter Tabs & Sort */}
-        <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-xs space-y-4">
+        <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-sm space-y-4">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
             {/* Search input */}
             <div className="relative w-full sm:max-w-md">
@@ -144,7 +144,7 @@ export default function LeadsPage() {
                 onClick={() => setStatusFilter(tab.id)}
                 className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-colors ${
                   statusFilter === tab.id
-                    ? 'bg-indigo-600 text-white shadow-xs'
+                    ? 'bg-indigo-600 text-white shadow-sm'
                     : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
                 }`}
               >

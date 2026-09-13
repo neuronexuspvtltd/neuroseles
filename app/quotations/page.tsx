@@ -129,7 +129,7 @@ export default function QuotationsPage() {
     <AppLayout title="Quotation Management">
       <div className="space-y-6 pb-16">
         {/* Top bar controls */}
-        <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-xs space-y-4">
+        <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-sm space-y-4">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
             {/* Search */}
             <div className="relative w-full sm:max-w-md">
@@ -160,7 +160,7 @@ export default function QuotationsPage() {
 
               <Link
                 href="/quotations/new"
-                className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-sm font-semibold shadow-xs shrink-0"
+                className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-sm font-semibold shadow-sm shrink-0"
               >
                 <Plus className="w-4 h-4" />
                 <span>Create Quotation</span>
@@ -180,7 +180,7 @@ export default function QuotationsPage() {
                 onClick={() => setStatusFilter(tab.id)}
                 className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-colors ${
                   statusFilter === tab.id
-                    ? 'bg-indigo-600 text-white shadow-xs'
+                    ? 'bg-indigo-600 text-white shadow-sm'
                     : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
                 }`}
               >
