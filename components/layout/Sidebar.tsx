@@ -140,24 +140,26 @@ export const Sidebar: React.FC<SidebarProps> = ({ mobileOpen = false, setMobileO
         }`}
       >
         {/* Brand Header */}
-        <div className="h-16 px-6 flex items-center justify-between border-b border-slate-100">
-          <Link href="/dashboard" className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-xl bg-indigo-600 flex items-center justify-center text-white font-bold text-lg shadow-xs">
-              N
-            </div>
-            <div>
-              <span className="font-bold text-slate-900 text-base leading-none block">
-                NeuroSales
+        <div className="h-16 px-4 flex items-center justify-between border-b border-slate-100 bg-slate-900 text-white">
+          <Link href="/dashboard" className="flex items-center gap-2.5 min-w-0">
+            <img
+              src="/logo.png"
+              alt="NEURONEXUS"
+              className="h-9 w-auto max-w-[140px] object-contain shrink-0"
+            />
+            <div className="hidden sm:block">
+              <span className="font-extrabold text-white text-sm leading-tight block tracking-tight">
+                NEURONEXUS
               </span>
-              <span className="text-[10px] font-semibold tracking-wider text-indigo-600 uppercase">
-                Lead CRM
+              <span className="text-[9px] font-bold tracking-wider text-cyan-400 uppercase block">
+                Next-Gen Intelligence
               </span>
             </div>
           </Link>
           {setMobileOpen && (
             <button
               onClick={() => setMobileOpen(false)}
-              className="lg:hidden p-1.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100"
+              className="lg:hidden p-1.5 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800"
             >
               <X className="w-5 h-5" />
             </button>

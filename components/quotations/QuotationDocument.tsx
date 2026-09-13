@@ -26,7 +26,7 @@ export const QuotationDocument: React.FC<QuotationDocumentProps> = ({
   if (!company) {
     company = {
       companyName: 'NEURONEXUS NEXT-GEN INTELLIGENCE',
-      logo: '/logo.jpg',
+      logo: '/logo.png',
       email: 'contact@neuronexus.ai',
       phone: '+91 98765 43210',
       website: 'https://neuronexus.ai',
@@ -40,8 +40,8 @@ export const QuotationDocument: React.FC<QuotationDocumentProps> = ({
     };
   }
 
-  const logoSrc = company.logo && company.logo.trim() !== '' ? company.logo : '/logo.jpg';
-  const watermarkSrc = logoSrc.endsWith('.png') ? '/logo.jpg' : logoSrc;
+  const logoSrc = company.logo && company.logo.trim() !== '' ? company.logo : '/logo.png';
+  const watermarkSrc = logoSrc;
 
   let client = quotation.lead;
   if (quotation.clientSnapshot) {

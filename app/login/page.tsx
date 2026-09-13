@@ -54,14 +54,20 @@ function LoginForm() {
     <div className="min-h-screen bg-slate-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         {/* Brand Header */}
-        <div className="flex justify-center items-center gap-3">
-          <div className="w-12 h-12 rounded-2xl bg-indigo-600 flex items-center justify-center text-white font-bold text-2xl shadow-md">
-            N
+        <div className="flex flex-col justify-center items-center gap-3 text-center">
+          <div className="p-3 bg-slate-900 rounded-2xl shadow-md border border-slate-800 flex items-center justify-center">
+            <img
+              src="/logo.png"
+              alt="NEURONEXUS"
+              className="h-12 w-auto max-w-[220px] object-contain"
+            />
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-slate-900 tracking-tight">NeuroSales</h1>
-            <p className="text-xs font-semibold text-indigo-600 uppercase tracking-wider">
-              Lead Management CRM
+            <h1 className="text-2xl font-black text-slate-900 tracking-tight uppercase">
+              NEURONEXUS
+            </h1>
+            <p className="text-xs font-bold text-cyan-600 uppercase tracking-widest">
+              Next-Gen Intelligence Lead CRM
             </p>
           </div>
         </div>
